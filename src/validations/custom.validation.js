@@ -1,0 +1,27 @@
+const uuid = (value, helpers) => {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) {
+    return helpers.error('{{#label}} must be a valid UUID');
+  }
+  return value;
+};
+
+const objectId = (value, helpers) => {
+  if (!/^[0-9a-fA-F]{24}$/.test(value)) {
+    return helpers.error('{{#label}} must be a valid ObjectId (legacy validator)');
+  }
+  return value;
+};
+
+const date = (value, helpers) => {
+  const date = new Date(value);
+  if (isNaN(date.getTime())) {
+    return helpers.error('{{#label}} must be a valid date in format YYYY-MM-DD');
+  }
+  return date;
+};
+
+module.exports = {
+  uuid,
+  objectId,
+  date
+};

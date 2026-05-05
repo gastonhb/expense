@@ -1,0 +1,45 @@
+{
+  "name": "api-template",
+  "version": "1.0.0",
+  "description": "API template with Node.js, Express, Sequelize",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "dev:watch": "node --watch src/index.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-updates": "npm outdated",
+    "security-audit": "npm audit",
+    "install:clean": "npm install --loglevel=error"
+  },
+  "author": "Gastón Herrera Barón",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
+    "glob": "^11.0.0",
+    "helmet": "^8.1.0",
+    "http-status": "^2.1.0",
+    "joi": "^17.13.3",
+    "morgan": "^1.10.0",
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "nodemon": "^3.1.10"
+  }
+}
