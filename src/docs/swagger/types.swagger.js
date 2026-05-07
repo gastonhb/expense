@@ -1,17 +1,27 @@
 /**
  * @swagger
- * /tests:
+ * /types:
  *   get:
- *     summary: Obtener lista de tests con paginación y ordenamiento
- *     tags: [Tests]
+ *     summary: Obtener lista de tipos de gastos
+ *     tags: [Types]
  *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *         description: Filtrar por codigo exacto
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filtrar por nombre exacto
  *       - in: query
  *         name: _page
  *         schema:
  *           type: integer
  *           minimum: 1
  *           default: 1
- *         description: Número de página
+ *         description: Numero de pagina
  *       - in: query
  *         name: _limit
  *         schema:
@@ -19,38 +29,31 @@
  *           minimum: 1
  *           maximum: 100
  *           default: 20
- *         description: Cantidad de elementos por página
+ *         description: Cantidad de elementos por pagina
  *       - in: query
  *         name: _order
  *         schema:
  *           type: string
- *           example: "name,-createdAt,updatedAt"
- *         description: |
- *           Campos de ordenamiento separados por coma.
- *           Usar prefijo '-' para orden descendente.
- *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         description: Filtrar por nombre (búsqueda parcial case-insensitive)
+ *           example: "name,-createdAt"
+ *         description: Ordenamiento
  *     responses:
  *       200:
- *         description: Lista de tests con metadatos de paginación y links
+ *         description: Lista de tipos
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/TestList'
+ *               $ref: '#/components/schemas/TypeList'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *   post:
- *     summary: Crear nuevo test
- *     tags: [Tests]
+ *     summary: Crear nuevo tipo
+ *     tags: [Types]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/TestBody'
+ *             $ref: '#/components/schemas/TypeBody'
  *     responses:
  *       201:
  *         $ref: '#/components/responses/Success'
@@ -60,38 +63,38 @@
 
 /**
  * @swagger
- * /tests/{id}:
+ * /types/{id}:
  *   get:
- *     summary: Obtener test por ID
- *     tags: [Tests]
+ *     summary: Obtener tipo por ID
+ *     tags: [Types]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del test
+ *         description: ID del tipo
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *   patch:
- *     summary: Actualizar test
- *     tags: [Tests]
+ *     summary: Actualizar tipo
+ *     tags: [Types]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del test
+ *         description: ID del tipo
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/TestBody'
+ *             $ref: '#/components/schemas/TypeBody'
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'
@@ -100,15 +103,15 @@
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *   delete:
- *     summary: Eliminar test
- *     tags: [Tests]
+ *     summary: Eliminar tipo
+ *     tags: [Types]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del test
+ *         description: ID del tipo
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'

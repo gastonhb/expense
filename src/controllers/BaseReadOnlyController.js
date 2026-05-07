@@ -6,9 +6,57 @@ class BaseReadOnlyControllerCore {
     this.service = service;
   }
 
+  splitFindQuery(query = {}) {
+    const {
+      _page,
+      _limit,
+      _order,
+      page,
+      limit,
+      order,
+      paginate,
+      ...filters
+    } = query;
+
+    const options = {
+      _page,
+      _limit,
+      _order,
+      page,
+      limit,
+      order,
+      paginate
+    };
+
+    Object.keys(options).forEach((key) => {
+      if (options[key] === undefined) {
+        delete options[key];
+      }
+    });
+
+    return { filters, options };
+  }
+
+  isPaginationEnabled(options = {}) {
+    if (options.paginate === undefined) {
+      return true;
+    }
+
+    if (typeof options.paginate === 'string') {
+      return !['false', '0', 'no'].includes(options.paginate.toLowerCase());
+    }
+
+    return Boolean(options.paginate);
+  }
+
   async find(req, res) {
-    const { query } = req;
-    const result = await this.service.find(query);
+    const { filters, options } = this.splitFindQuery(req.query);
+    const result = await this.service.find(filters, options);
+
+    if (!this.isPaginationEnabled(options)) {
+      return ResponseHelper.success(res, result);
+    }
+
     const links = this.generatePaginationLinks(req, result);
     return ResponseHelper.paginated(res, result, links);
   }

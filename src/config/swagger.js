@@ -6,12 +6,11 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API Template Documentation',
+      title: 'Expense API',
       version: '1.0.0',
-      description: 'Template de API REST con Node.js, Express, Sequelize y PostgreSQL - Funcionalidades basicas incluidas',
+      description: 'Api para gestionar gastos',
       contact: {
-        name: 'Gastón Herrera Barón',
-        email: 'gaston@apiTemplate.com'
+        name: 'Gastón Herrera Barón'
       },
       license: {
         name: 'ISC',
@@ -39,32 +38,6 @@ const options = {
       },
       responses: {
         Success: {
-          description: 'Operación exitosa',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  status: {
-                    type: 'string',
-                    example: 'success'
-                  },
-                  message: {
-                    type: 'string',
-                    example: 'Operación completada exitosamente'
-                  },
-                  data: {
-                    type: 'object'
-                  },
-                  timestamp: {
-                    type: 'string',
-                    format: 'date-time',
-                    example: '2023-01-01T00:00:00.000Z'
-                  }
-                }
-              }
-            }
-          }
         },
         Error: {
           description: 'Error en la operación',
@@ -220,8 +193,20 @@ const options = {
     },
     tags: [
       {
-        name: 'Tests',
-        description: 'Operaciones relacionadas con tests'
+        name: 'Expenses',
+        description: 'Operaciones relacionadas con gastos'
+      },
+      {
+        name: 'PaymentMethods',
+        description: 'Operaciones relacionadas con metodos de pago'
+      },
+      {
+        name: 'Types',
+        description: 'Operaciones relacionadas con tipos de gastos'
+      },
+      {
+        name: 'Subtypes',
+        description: 'Operaciones relacionadas con subtipos de gastos'
       },
       {
         name: 'Health',

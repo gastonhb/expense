@@ -35,20 +35,29 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Tu token ha expirado! Por favor inicia sesión de nuevo.', 401);
 
+const clientMessage = (err) => {
+  if (err.statusCode === 404) {
+    return 'Recurso no encontrado';
+  }
+  return err.message;
+};
+
 const sendErrorDev = (err, req, res) => {
   // API
   if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/v1')) {
     return res.status(err.statusCode).json({
-      message: err.message,
+      status: 'error',
+      message: clientMessage(err),
       stack: err.stack,
       timestamp: new Date().toISOString()
     });
   }
 
   // Para cualquier ruta (ya que es una API REST)
-  logger.error('ERROR 💥', err);
+  logger.error('ERROR', err);
   return res.status(err.statusCode).json({
-    message: err.message,
+    status: 'error',
+    message: clientMessage(err),
     stack: err.stack,
     timestamp: new Date().toISOString()
   });
@@ -58,22 +67,24 @@ const sendErrorProd = (err, req, res) => {
   // Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).json({
-      message: err.message,
+      status: 'error',
+      message: clientMessage(err),
       timestamp: new Date().toISOString()
     });
   }
 
   // Programming or other unknown error: don't leak error details
   // 1) Log error
-  logger.error('ERROR 💥', err);
+  logger.error('ERROR', err);
   // 2) Send generic message
   return res.status(500).json({
+    status: 'error',
     message: 'Algo salió mal!',
     timestamp: new Date().toISOString()
   });
 };
 
-const globalErrorHandler = (err, req, res) => {
+const globalErrorHandler = (err, req, res, _next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 

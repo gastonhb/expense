@@ -1,1 +1,4 @@
-module.exports.testController = require('./test.controller');
+module.exports.expenseController = require('./expense.controller');
+module.exports.paymentMethodController = require('./paymentMethod.controller');
+module.exports.subtypeController = require('./subtype.controller');
+module.exports.typeController = require('./type.controller');

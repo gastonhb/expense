@@ -4,17 +4,16 @@ const methodNotAllowed = require('../middlewares/methodNotAllowed');
 const validate = require('../middlewares/validate');
 const { apiLimiter, createLimiter } = require('../middlewares/rateLimiter');
 
-const { testController: controller } = require('../controllers');
-const { testValidation: validation } = require('../validations');
+const { typeController: controller } = require('../controllers');
+const { typeValidation: validation } = require('../validations');
 
-// Aplicar rate limiting general
 router.use(apiLimiter);
 
 /**
  * @swagger
  * tags:
- *   name: Tests
- *   description: Operaciones CRUD para tests
+ *   name: Types
+ *   description: Operaciones CRUD para tipos de gastos
  */
 
 router.route('/')

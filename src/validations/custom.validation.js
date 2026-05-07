@@ -20,8 +20,27 @@ const date = (value, helpers) => {
   return date;
 };
 
+const orderString = (value, helpers) => {
+  if (!value || typeof value !== 'string') {
+    return helpers.error('{{#label}} must be a string');
+  }
+
+  const sortFields = value.split(',').map((field) => field.trim()).filter(Boolean);
+
+  for (const field of sortFields) {
+    if (field.startsWith('-')) {
+      if (field.length < 2) {
+        return helpers.error('{{#label}} invalid format. Example: "field,-otherField"');
+      }
+    }
+  }
+
+  return value;
+};
+
 module.exports = {
   uuid,
   objectId,
-  date
+  date,
+  orderString
 };
