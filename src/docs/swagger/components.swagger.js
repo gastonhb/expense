@@ -25,7 +25,6 @@
  *       type: object
  *       required:
  *         - id
- *         - code
  *         - name
  *         - createdAt
  *         - updatedAt
@@ -34,12 +33,12 @@
  *           type: string
  *           format: uuid
  *           description: ID unico del tipo
- *         code:
- *           type: string
- *           description: Codigo del tipo
  *         name:
  *           type: string
  *           description: Nombre del tipo
+ *         description:
+ *           type: string
+ *           description: Descripcion detallada del tipo
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -50,26 +49,25 @@
  *           description: Fecha de ultima actualizacion
  *       example:
  *         id: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
- *         code: "HOGAR"
  *         name: "Hogar"
+ *         description: "Gastos relacionados con el mantenimiento y servicios de la vivienda"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
  *
  *     TypeBody:
  *       type: object
  *       required:
- *         - code
  *         - name
  *       properties:
- *         code:
- *           type: string
- *           description: Codigo del tipo
  *         name:
  *           type: string
  *           description: Nombre del tipo
+ *         description:
+ *           type: string
+ *           description: Descripcion detallada del tipo
  *       example:
- *         code: "HOGAR"
  *         name: "Hogar"
+ *         description: "Gastos relacionados con el mantenimiento y servicios de la vivienda"
  *
  *     TypeList:
  *       type: object
@@ -88,7 +86,6 @@
  *       type: object
  *       required:
  *         - id
- *         - code
  *         - name
  *         - typeId
  *         - createdAt
@@ -98,12 +95,12 @@
  *           type: string
  *           format: uuid
  *           description: ID unico del subtipo
- *         code:
- *           type: string
- *           description: Codigo del subtipo
  *         name:
  *           type: string
  *           description: Nombre del subtipo
+ *         description:
+ *           type: string
+ *           description: Descripcion detallada del subtipo
  *         typeId:
  *           type: string
  *           format: uuid
@@ -118,8 +115,8 @@
  *           description: Fecha de ultima actualizacion
  *       example:
  *         id: "b2c3d4e5-f6a7-4748-9b1c-2d3e4f5a6b7c"
- *         code: "SUPERMERCADO"
  *         name: "Supermercado"
+ *         description: "Compras de alimentos y productos de limpieza"
  *         typeId: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
@@ -127,23 +124,22 @@
  *     SubtypeBody:
  *       type: object
  *       required:
- *         - code
  *         - name
  *         - typeId
  *       properties:
- *         code:
- *           type: string
- *           description: Codigo del subtipo
  *         name:
  *           type: string
  *           description: Nombre del subtipo
+ *         description:
+ *           type: string
+ *           description: Descripcion detallada del subtipo
  *         typeId:
  *           type: string
  *           format: uuid
  *           description: ID del tipo al que pertenece
  *       example:
- *         code: "SUPERMERCADO"
  *         name: "Supermercado"
+ *         description: "Compras de alimentos y productos de limpieza"
  *         typeId: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
  *
  *     SubtypeList:
@@ -163,7 +159,6 @@
  *       type: object
  *       required:
  *         - id
- *         - code
  *         - name
  *         - createdAt
  *         - updatedAt
@@ -172,12 +167,12 @@
  *           type: string
  *           format: uuid
  *           description: ID unico del metodo de pago
- *         code:
- *           type: string
- *           description: Codigo del metodo de pago
  *         name:
  *           type: string
  *           description: Nombre del metodo de pago
+ *         description:
+ *           type: string
+ *           description: Descripcion del metodo de pago
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -188,26 +183,25 @@
  *           description: Fecha de ultima actualizacion
  *       example:
  *         id: "c3d4e5f6-a7b8-4748-9c2d-3e4f5a6b7c8d"
- *         code: "TRANSFERENCIA"
  *         name: "Transferencia"
+ *         description: "Transferencia bancaria directa"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
  *
  *     PaymentMethodBody:
  *       type: object
  *       required:
- *         - code
  *         - name
  *       properties:
- *         code:
- *           type: string
- *           description: Codigo del metodo de pago
  *         name:
  *           type: string
  *           description: Nombre del metodo de pago
+ *         description:
+ *           type: string
+ *           description: Descripcion del metodo de pago
  *       example:
- *         code: "TRANSFERENCIA"
  *         name: "Transferencia"
+ *         description: "Transferencia bancaria directa"
  *
  *     PaymentMethodList:
  *       type: object

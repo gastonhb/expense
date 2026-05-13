@@ -6,11 +6,6 @@
  *     tags: [PaymentMethods]
  *     parameters:
  *       - in: query
- *         name: code
- *         schema:
- *           type: string
- *         description: Filtrar por codigo exacto
- *       - in: query
  *         name: name
  *         schema:
  *           type: string

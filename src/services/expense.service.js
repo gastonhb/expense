@@ -1,4 +1,4 @@
-const { Expense } = require('../models');
+const { Expense, PaymentMethod, Type, Subtype } = require('../models');
 const BaseService = require('./BaseService');
 const { ServiceError } = require('./errors');
 const paymentMethodService = require('./paymentMethod.service');
@@ -9,6 +9,23 @@ class ExpenseService extends BaseService {
     super(Expense, 'Expense');
     this.defaultSort = '-date';
     this.dateRangeFields = ['date'];
+  }
+
+  getFindIncludes() {
+    return [
+      {
+        model: PaymentMethod,
+        as: 'paymentMethod'
+      },
+      {
+        model: Type,
+        as: 'type'
+      },
+      {
+        model: Subtype,
+        as: 'subtype'
+      }
+    ];
   }
 
   async validateSubtypeType(typeId, subtypeId) {

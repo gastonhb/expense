@@ -6,11 +6,6 @@
  *     tags: [Subtypes]
  *     parameters:
  *       - in: query
- *         name: code
- *         schema:
- *           type: string
- *         description: Filtrar por código exacto
- *       - in: query
  *         name: name
  *         schema:
  *           type: string

@@ -7,14 +7,13 @@ module.exports = (sequelize) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    code: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     tableName: 'payment_methods',

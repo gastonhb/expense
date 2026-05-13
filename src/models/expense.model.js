@@ -51,6 +51,21 @@ module.exports = (sequelize) => {
     timestamps: true
   });
 
+  Expense.associate = (models) => {
+    Expense.belongsTo(models.PaymentMethod, {
+      foreignKey: 'paymentMethodId',
+      as: 'paymentMethod'
+    });
+    Expense.belongsTo(models.Type, {
+      foreignKey: 'typeId',
+      as: 'type'
+    });
+    Expense.belongsTo(models.Subtype, {
+      foreignKey: 'subtypeId',
+      as: 'subtype'
+    });
+  };
+
   return Expense;
 };
 

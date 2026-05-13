@@ -5,7 +5,7 @@ class PaymentMethodService extends BaseService {
   constructor() {
     super(PaymentMethod, 'PaymentMethod');
     this.defaultSort = '-createdAt';
-    this.textSearchFields = ['code', 'name'];
+    this.textSearchFields = ['name', 'description'];
   }
 }
 

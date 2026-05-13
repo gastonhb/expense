@@ -5,7 +5,7 @@ class TypeService extends BaseService {
   constructor() {
     super(Type, 'Type');
     this.defaultSort = '-createdAt';
-    this.textSearchFields = ['code', 'name'];
+    this.textSearchFields = ['name', 'description'];
   }
 }
 

@@ -5,7 +5,7 @@ class SubtypeService extends BaseService {
   constructor() {
     super(Subtype, 'Subtype');
     this.defaultSort = '-createdAt';
-    this.textSearchFields = ['code', 'name'];
+    this.textSearchFields = ['name', 'description'];
   }
 
   getFindIncludes() {
