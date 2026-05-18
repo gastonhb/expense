@@ -209,6 +209,10 @@ const options = {
         description: 'Operaciones relacionadas con subtipos de gastos'
       },
       {
+        name: 'Users',
+        description: 'Operaciones relacionadas con usuarios'
+      },
+      {
         name: 'Health',
         description: 'Endpoints de salud del sistema'
       }

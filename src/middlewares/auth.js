@@ -1,9 +1,13 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { promisify } = require('util');
 const config = require('../config/environment');
 const { AppError } = require('./errorHandler');
 const catchAsync = require('../utils/catchAsync');
 const logger = require('../config/logger');
+const { User } = require('../models');
+
+const jwksCache = new Map();
 
 // Función para generar JWT
 const signToken = (id) => {
@@ -46,18 +50,136 @@ const createSendToken = (user, statusCode, res, message = 'Autenticación exitos
   });
 };
 
-// Middleware para proteger rutas
-const protect = catchAsync(async (req, res, next) => {
-  // 1) Obtener token y verificar si existe
-  let token;
+const getTokenFromRequest = (req) => {
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
+    return req.headers.authorization.split(' ')[1];
   }
+
+  return req.cookies.jwt;
+};
+
+const isSupabaseIssuer = (issuer) => {
+  if (!issuer) return false;
+  if (config.supabase.authIssuer) return issuer === config.supabase.authIssuer;
+
+  try {
+    const url = new URL(issuer);
+    return url.hostname.endsWith('.supabase.co') && url.pathname === '/auth/v1';
+  } catch {
+    return false;
+  }
+};
+
+const getJwksForIssuer = async (issuer) => {
+  const cached = jwksCache.get(issuer);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.keys;
+  }
+
+  const response = await fetch(`${issuer}/.well-known/jwks.json`);
+  if (!response.ok) {
+    throw new Error(`No se pudo obtener JWKS de Supabase (${response.status})`);
+  }
+
+  const { keys } = await response.json();
+  jwksCache.set(issuer, {
+    keys,
+    expiresAt: Date.now() + 60 * 60 * 1000
+  });
+
+  return keys;
+};
+
+const getSupabaseSigningKey = (issuer) => async (header, callback) => {
+  try {
+    const keys = await getJwksForIssuer(issuer);
+    const key = keys.find((currentKey) => currentKey.kid === header.kid);
+
+    if (!key) {
+      return callback(new Error('No se encontro la clave publica del token'));
+    }
+
+    const publicKey = crypto
+      .createPublicKey({ key, format: 'jwk' })
+      .export({ format: 'pem', type: 'spki' });
+
+    callback(null, publicKey);
+  } catch (error) {
+    callback(error);
+  }
+};
+
+const verifySupabaseToken = async (token) => {
+  const decoded = jwt.decode(token, { complete: true });
+  const issuer = decoded?.payload?.iss;
+
+  if (!isSupabaseIssuer(issuer)) {
+    throw new Error('El issuer del token no corresponde a Supabase');
+  }
+
+  return await promisify(jwt.verify)(token, getSupabaseSigningKey(issuer), {
+    algorithms: ['ES256', 'RS256'],
+    audience: config.supabase.authAudience,
+    issuer
+  });
+};
+
+const findOrCreateSupabaseUser = async (decoded) => {
+  const metadata = decoded.user_metadata || {};
+  const email = (decoded.email || metadata.email)?.toLowerCase();
+  const authenticationId = decoded.sub;
+
+  if (!authenticationId || !email) {
+    throw new AppError('El token de Supabase no contiene datos de usuario suficientes.', 401);
+  }
+
+  const existingUser = await User.findOne({ where: { authenticationId } });
+  if (existingUser) return existingUser;
+
+  const userByEmail = await User.findOne({ where: { email } });
+  if (userByEmail) {
+    await userByEmail.update({ authenticationId });
+    return userByEmail;
+  }
+
+  return await User.create({
+    authenticationId,
+    email,
+    name: metadata.first_name || metadata.name || email.split('@')[0],
+    lastName: metadata.last_name || metadata.family_name || '-'
+  });
+};
+
+const getAuthenticatedUser = async (token) => {
+  const decodedToken = jwt.decode(token);
+
+  if (isSupabaseIssuer(decodedToken?.iss)) {
+    const decoded = await verifySupabaseToken(token);
+    const user = await findOrCreateSupabaseUser(decoded);
+
+    return {
+      id: user.id,
+      role: decoded.role,
+      email: user.email,
+      authenticationId: decoded.sub,
+      authProvider: 'supabase'
+    };
+  }
+
+  const decoded = await promisify(jwt.verify)(token, config.jwt.secret);
+  return {
+    id: decoded.id,
+    authProvider: 'local'
+  };
+};
+
+// Middleware para proteger rutas
+const protect = catchAsync(async (req, res, next) => {
+  // 1) Obtener token y verificar si existe
+  const token = getTokenFromRequest(req);
 
   if (!token) {
     logger.warn('Acceso denegado - Sin token', {
@@ -73,7 +195,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   try {
     // 2) Verificar token
-    const decoded = await promisify(jwt.verify)(token, config.jwt.secret);
+    const user = await getAuthenticatedUser(token);
 
     // 3) Verificar si el usuario aún existe
     // const currentUser = await User.findById(decoded.id);
@@ -91,11 +213,12 @@ const protect = catchAsync(async (req, res, next) => {
     // }
 
     // GRANT ACCESS TO PROTECTED ROUTE
-    req.user = { id: decoded.id }; // currentUser;
+    req.user = user; // currentUser;
     res.locals.user = req.user;
 
     logger.info('Acceso autorizado', {
-      userId: decoded.id,
+      userId: user.id,
+      authProvider: user.authProvider,
       url: req.originalUrl
     });
 
@@ -133,13 +256,12 @@ const restrictTo = (...roles) => {
 
 // Middleware para verificar si está logueado (no obligatorio)
 const isLoggedIn = async (req, res, next) => {
-  if (req.cookies.jwt) {
+  const token = getTokenFromRequest(req);
+
+  if (token) {
     try {
       // 1) verify the token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        config.jwt.secret
-      );
+      const user = await getAuthenticatedUser(token);
 
       // 2) Check if user still exists
       // const currentUser = await User.findById(decoded.id);
@@ -153,7 +275,7 @@ const isLoggedIn = async (req, res, next) => {
       // }
 
       // THERE IS A LOGGED IN USER
-      res.locals.user = { id: decoded.id }; // currentUser;
+      res.locals.user = user; // currentUser;
       return next();
     } catch (err) {
       return next(err);

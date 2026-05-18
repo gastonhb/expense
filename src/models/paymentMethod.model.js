@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const auditFields = require('./auditFields');
 
 module.exports = (sequelize) => {
   const PaymentMethod = sequelize.define('PaymentMethod', {
@@ -14,11 +15,39 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: true
-    }
+    },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    ...auditFields(DataTypes)
   }, {
     tableName: 'payment_methods',
     timestamps: true
   });
+
+  PaymentMethod.associate = (models) => {
+    PaymentMethod.hasMany(models.Expense, {
+      foreignKey: 'paymentMethodId',
+      as: 'expenses'
+    });
+    PaymentMethod.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user'
+    });
+    PaymentMethod.belongsTo(models.User, {
+      foreignKey: 'createdBy',
+      as: 'creator'
+    });
+    PaymentMethod.belongsTo(models.User, {
+      foreignKey: 'updatedBy',
+      as: 'updater'
+    });
+  };
 
   return PaymentMethod;
 };

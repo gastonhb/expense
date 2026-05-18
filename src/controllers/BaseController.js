@@ -5,19 +5,19 @@ const withAsyncHandling = require('../mixins/withAsyncHandling');
 class BaseControllerCore extends BaseReadOnlyController {
   async create(req, res) {
     const { body } = req;
-    const result = await this.service.create(body);
+    const result = await this.service.create(body, req.user);
     return ResponseHelper.created(res, result);
   }
 
   async update(req, res) {
     const { params, body } = req;
-    const result = await this.service.update(params.id, body);
+    const result = await this.service.update(params.id, body, req.user);
     return ResponseHelper.updated(res, result);
   }
 
   async delete(req, res) {
     const { params } = req;
-    await this.service.delete(params.id);
+    await this.service.delete(params.id, req.user);
     return ResponseHelper.deleted(res);
   }
 }

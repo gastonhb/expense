@@ -1,35 +1,70 @@
 const BaseReadOnlyService = require('./BaseReadOnlyService');
-const { NotFoundServiceError } = require('./errors');
+const { NotFoundServiceError, UnauthorizedServiceError } = require('./errors');
 
 class BaseService extends BaseReadOnlyService {
   constructor(model, entityName) {
     super(model, entityName);
   }
 
-  async create(data) {
-    return await this.model.create(data);
+  sanitizeWriteData(data = {}) {
+    const sanitized = { ...data };
+
+    delete sanitized.createdBy;
+    delete sanitized.updatedBy;
+
+    if (this.model.rawAttributes.userId) {
+      delete sanitized.userId;
+    }
+
+    return sanitized;
   }
 
-  async update(id, data) {
-    const document = await this.model.findByPk(id);
+  buildCreateData(data, reqUser) {
+    const sanitizedData = this.sanitizeWriteData(data);
+    const createData = {
+      ...sanitizedData,
+      createdBy: reqUser?.id ?? null,
+      updatedBy: reqUser?.id ?? null
+    };
 
-    if (!document) {
+    if (this.model.rawAttributes.userId) {
+      if (!reqUser?.id) {
+        throw new UnauthorizedServiceError('Debes estar autenticado para crear este recurso', 'create');
+      }
+
+      createData.userId = reqUser.id;
+    }
+
+    return createData;
+  }
+
+  async create(data, reqUser) {
+    return await this.model.create(this.buildCreateData(data, reqUser));
+  }
+
+  async update(id, data, reqUser) {
+    const element = await this.findById(id, reqUser);
+
+    if (!element) {
       throw new NotFoundServiceError(this.entityName, id);
     }
 
-    await document.update(data);
-    return document;
+    const sanitizedData = this.sanitizeWriteData(data);
+
+    return await element.update({
+      ...sanitizedData,
+      updatedBy: reqUser?.id ?? null
+    });
   }
 
-  async delete(id) {
-    const document = await this.model.findByPk(id);
+  async delete(id, reqUser) {
+    const element = await this.findById(id, reqUser);
 
-    if (!document) {
+    if (!element) {
       throw new NotFoundServiceError(this.entityName, id);
     }
 
-    await document.destroy();
-    return document;
+    return await element.destroy();
   }
 
   // Métodos adicionales comunes en la industria

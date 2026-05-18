@@ -7,6 +7,7 @@ module.exports = [
         console: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
+        fetch: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
         exports: 'writable',

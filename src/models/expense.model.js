@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const auditFields = require('./auditFields');
 
 module.exports = (sequelize) => {
   const Expense = sequelize.define('Expense', {
@@ -45,7 +46,16 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: false
-    }
+    },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    ...auditFields(DataTypes)
   }, {
     tableName: 'expenses',
     timestamps: true
@@ -63,6 +73,18 @@ module.exports = (sequelize) => {
     Expense.belongsTo(models.Subtype, {
       foreignKey: 'subtypeId',
       as: 'subtype'
+    });
+    Expense.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user'
+    });
+    Expense.belongsTo(models.User, {
+      foreignKey: 'createdBy',
+      as: 'creator'
+    });
+    Expense.belongsTo(models.User, {
+      foreignKey: 'updatedBy',
+      as: 'updater'
     });
   };
 

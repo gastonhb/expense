@@ -5,6 +5,18 @@ const config = require('./environment');
 class Database {
   static connection = null;
 
+  static getDefineOptions() {
+    const define = {
+      timestamps: true
+    };
+
+    if (config.database.schema) {
+      define.schema = config.database.schema;
+    }
+
+    return define;
+  }
+
   static getDialectOptions() {
     if (!config.database.ssl) {
       return {};
@@ -27,7 +39,7 @@ class Database {
       dialect: config.database.dialect,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
       dialectOptions: Database.getDialectOptions(),
-      define: config.database.schema ? { schema: config.database.schema } : {}
+      define: Database.getDefineOptions()
     })
     : new Sequelize(config.database.name, config.database.user, config.database.password, {
       host: config.database.host,
@@ -35,7 +47,7 @@ class Database {
       dialect: config.database.dialect,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
       dialectOptions: Database.getDialectOptions(),
-      define: config.database.schema ? { schema: config.database.schema } : {}
+      define: Database.getDefineOptions()
     });
 
   /**

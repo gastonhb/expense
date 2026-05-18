@@ -349,4 +349,90 @@
  *             last:
  *               type: string
  *               example: "http://localhost:3000/v1/expenses?_page=5&_limit=10"
+ *
+ *     User:
+ *       type: object
+ *       required:
+ *         - id
+ *         - name
+ *         - lastName
+ *         - email
+ *         - authenticationId
+ *         - createdAt
+ *         - updatedAt
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: ID unico del usuario
+ *         name:
+ *           type: string
+ *           description: Nombre del usuario
+ *         lastName:
+ *           type: string
+ *           description: Apellido del usuario
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email del usuario
+ *         authenticationId:
+ *           type: string
+ *           description: ID externo de autenticacion
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Fecha de creacion
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Fecha de ultima actualizacion
+ *       example:
+ *         id: "d4e5f6a7-b8c9-4748-9d3e-4f5a6b7c8d9e"
+ *         name: "Gaston"
+ *         lastName: "Herrera"
+ *         email: "gaston@example.com"
+ *         authenticationId: "auth0|123456789"
+ *         createdAt: "2026-05-05T14:00:00.000Z"
+ *         updatedAt: "2026-05-05T14:00:00.000Z"
+ *
+ *     UserBody:
+ *       type: object
+ *       required:
+ *         - name
+ *         - lastName
+ *         - email
+ *         - authenticationId
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Nombre del usuario
+ *         lastName:
+ *           type: string
+ *           description: Apellido del usuario
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email del usuario
+ *         authenticationId:
+ *           type: string
+ *           description: ID externo de autenticacion
+ *       example:
+ *         name: "Gaston"
+ *         lastName: "Herrera"
+ *         email: "gaston@example.com"
+ *         authenticationId: "auth0|123456789"
+ *
+ *     UserList:
+ *       type: object
+ *       properties:
+ *         count:
+ *           type: integer
+ *           example: 12
+ *           description: Total de registros que coinciden con los filtros
+ *         results:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/User'
+ *         links:
+ *           type: object
  */

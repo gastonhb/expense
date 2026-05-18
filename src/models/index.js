@@ -1,15 +1,17 @@
 const Database = require('../config/database');
 
-const Expense = require('./expense.model')(Database.getSequelize());
-const PaymentMethod = require('./paymentMethod.model')(Database.getSequelize());
-const Subtype = require('./subtype.model')(Database.getSequelize());
+const User = require('./user.model')(Database.getSequelize());
 const Type = require('./type.model')(Database.getSequelize());
+const Subtype = require('./subtype.model')(Database.getSequelize());
+const PaymentMethod = require('./paymentMethod.model')(Database.getSequelize());
+const Expense = require('./expense.model')(Database.getSequelize());
 
 const models = {
-  Expense,
-  PaymentMethod,
+  User,
+  Type,
   Subtype,
-  Type
+  PaymentMethod,
+  Expense
 };
 
 Object.values(models).forEach((model) => {

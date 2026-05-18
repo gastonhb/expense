@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "API template with Node.js, Express, Sequelize",
   "main": "index.js",
+  "packageManager": "pnpm@11.1.2",
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=10.0.0"
@@ -29,6 +30,7 @@
     "helmet": "^8.1.0",
     "http-status": "^2.1.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",

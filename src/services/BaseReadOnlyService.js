@@ -8,6 +8,35 @@ class BaseReadOnlyService {
     this.entityName = entityName;
   }
 
+  shouldEnforceUserScope() {
+    return Boolean(this.model.rawAttributes?.userId) && this.enforceUserScope !== false;
+  }
+
+  resolveRequestUserId(reqUser) {
+    return reqUser?.id ?? reqUser?.userId ?? null;
+  }
+
+  getScopedWhere(reqUser) {
+    if (!this.shouldEnforceUserScope()) {
+      return {};
+    }
+
+    const userId = this.resolveRequestUserId(reqUser);
+
+    if (!userId) {
+      throw new ServiceError('Debes estar autenticado para acceder a este recurso');
+    }
+
+    return { userId };
+  }
+
+  applyUserScope(where = {}, reqUser) {
+    return {
+      ...where,
+      ...this.getScopedWhere(reqUser)
+    };
+  }
+
   /**
    * Helper para búsqueda de texto en múltiples campos
    * @param {Array} fields - Campos donde buscar
@@ -137,7 +166,25 @@ class BaseReadOnlyService {
     };
   }
 
-  async find(filters = {}, options = {}) {
+  buildOrder(orderOption, validOrderFields) {
+    const order = [];
+    const sortFields = orderOption.split(',').map((field) => field.trim()).filter(Boolean);
+
+    sortFields.forEach((field) => {
+      const isDescending = field.startsWith('-');
+      const fieldName = isDescending ? field.substring(1) : field;
+
+      if (!validOrderFields.includes(fieldName)) {
+        throw new ServiceError(`Campo de ordenamiento no valido: ${fieldName}`);
+      }
+
+      order.push([fieldName, isDescending ? 'DESC' : 'ASC']);
+    });
+
+    return order;
+  }
+
+  async find(filters = {}, options = {}, reqUser = null) {
     const safeFilters = this.extractFindFilters(filters);
     const resolvedOptions = this.resolveFindOptions(options);
     const paginate = resolvedOptions.paginate;
@@ -159,32 +206,10 @@ class BaseReadOnlyService {
     // Calcular skip
     const skip = (page - 1) * limit;
 
-    const order = [];
     const validOrderFields = Object.keys(this.model.rawAttributes || {});
-
-    if (resolvedOptions.order) {
-      const sortFields = resolvedOptions.order.split(',').map((field) => field.trim()).filter(Boolean);
-
-      sortFields.forEach((field) => {
-        if (field.startsWith('-')) {
-          const fieldName = field.substring(1);
-          if (!validOrderFields.includes(fieldName)) {
-            throw new ServiceError(`Campo de ordenamiento no valido: ${fieldName}`);
-          }
-          order.push([fieldName, 'DESC']);
-        } else {
-          if (!validOrderFields.includes(field)) {
-            throw new ServiceError(`Campo de ordenamiento no valido: ${field}`);
-          }
-          order.push([field, 'ASC']);
-        }
-      });
-    } else {
-      const defaultSort = this.defaultSort || 'createdAt';
-      if (validOrderFields.includes(defaultSort)) {
-        order.push([defaultSort, 'DESC']);
-      }
-    }
+    const defaultSort = this.defaultSort || 'createdAt';
+    const orderOption = resolvedOptions.order || defaultSort;
+    const order = this.buildOrder(orderOption, validOrderFields);
 
     let searchFilters;
     if (this.buildCustomFilters && typeof this.buildCustomFilters === 'function') {
@@ -192,6 +217,8 @@ class BaseReadOnlyService {
     } else {
       searchFilters = this.applyAutoFilters(safeFilters);
     }
+
+    searchFilters = this.applyUserScope(searchFilters, reqUser);
 
     const findOptions = {
       where: searchFilters,
@@ -238,9 +265,8 @@ class BaseReadOnlyService {
     };
   }
 
-  async findById(id) {
+  async findById(id, reqUser = null) {
     const findOptions = {};
-
     const defaultIncludes = this.getFindOneIncludes({ id });
 
     if (defaultIncludes !== undefined) {
@@ -251,27 +277,28 @@ class BaseReadOnlyService {
       findOptions.attributes = this.defaultSelect;
     }
 
-    const document = await this.model.findByPk(id, findOptions);
+    findOptions.where = this.applyUserScope({ id }, reqUser);
 
-    if (!document) {
+    const element = await this.model.findOne(findOptions);
+    if (!element) {
       throw new NotFoundServiceError(this.entityName, id);
     }
 
-    return document;
+    return element;
   }
 
   // Método para encontrar uno con filtros personalizados
-  async findOne(filters = {}) {
+  async findOne(filters = {}, reqUser = null) {
     const customFilters = this.buildCustomFilters ?
       this.buildCustomFilters(filters) : filters;
 
     const findOptions = {
-      where: customFilters
+      where: this.applyUserScope(customFilters, reqUser)
     };
 
     const defaultIncludes = this.getFindOneIncludes({
       filters,
-      where: customFilters
+      where: this.applyUserScope(customFilters, reqUser)
     });
 
     if (defaultIncludes !== undefined) {
@@ -285,17 +312,17 @@ class BaseReadOnlyService {
     return await this.model.findOne(findOptions);
   }
 
-  // Método para contar documentos
-  async count(filters = {}) {
+  // Método para contar elementos con filtros personalizados
+  async count(filters = {}, reqUser = null) {
     const customFilters = this.buildCustomFilters ?
       this.buildCustomFilters(filters) : filters;
 
-    return await this.model.count({ where: customFilters });
+    return await this.model.count({ where: this.applyUserScope(customFilters, reqUser) });
   }
 
-  // Método para verificar si existe un documento
-  async exists(filters) {
-    const total = await this.model.count({ where: filters, limit: 1 });
+  // Método para verificar si existe un elemento con ciertos filtros
+  async exists(filters, reqUser = null) {
+    const total = await this.model.count({ where: this.applyUserScope(filters, reqUser), limit: 1 });
     return total > 0;
   }
 }

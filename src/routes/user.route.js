@@ -2,20 +2,18 @@ const express = require('express');
 const router = express.Router();
 const methodNotAllowed = require('../middlewares/methodNotAllowed');
 const validate = require('../middlewares/validate');
-const { protect } = require('../middlewares/auth');
 const { apiLimiter, createLimiter } = require('../middlewares/rateLimiter');
 
-const { expenseController: controller } = require('../controllers');
-const { expenseValidation: validation } = require('../validations');
+const { userController: controller } = require('../controllers');
+const { userValidation: validation } = require('../validations');
 
 router.use(apiLimiter);
-router.use(protect);
 
 /**
  * @swagger
  * tags:
- *   name: Expenses
- *   description: Operaciones CRUD para gastos
+ *   name: Users
+ *   description: Operaciones CRUD para usuarios
  */
 
 router.route('/')

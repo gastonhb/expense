@@ -71,6 +71,17 @@ const envSchema = Joi.object({
   JWT_COOKIE_EXPIRES_IN: Joi.number()
     .default(7),
 
+  SUPABASE_URL: Joi.string()
+    .uri()
+    .optional(),
+
+  SUPABASE_AUTH_ISSUER: Joi.string()
+    .uri()
+    .optional(),
+
+  SUPABASE_AUTH_AUDIENCE: Joi.string()
+    .default('authenticated'),
+
   // Pagination configuration
   PAGINATION_DEFAULT_PAGE_SIZE: Joi.number()
     .integer()
@@ -133,6 +144,12 @@ const config = {
     secret: env.JWT_SECRET,
     expiresIn: env.JWT_EXPIRES_IN,
     cookieExpiresIn: env.JWT_COOKIE_EXPIRES_IN
+  },
+
+  supabase: {
+    url: env.SUPABASE_URL,
+    authIssuer: env.SUPABASE_AUTH_ISSUER || (env.SUPABASE_URL ? `${env.SUPABASE_URL.replace(/\/$/, '')}/auth/v1` : undefined),
+    authAudience: env.SUPABASE_AUTH_AUDIENCE
   },
 
   // Pagination configuration
