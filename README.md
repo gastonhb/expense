@@ -105,7 +105,7 @@ npm run dev
 
 Este repositorio ya incluye [render.yaml](render.yaml) para crear en Render:
 - Un servicio web Node.js (`expense-api`)
-- Una base PostgreSQL gestionada (`expense-postgres`)
+- Conexión a PostgreSQL externo (recomendado: Neon)
 
 Pasos:
 
@@ -118,11 +118,12 @@ git push
 
 1. En Render, elegir **New +** -> **Blueprint**.
 2. Conectar tu repositorio y seleccionar la rama.
-3. Render detectará `render.yaml` y aprovisionará API + DB.
+3. Render detectará `render.yaml` y aprovisionará la API.
+4. En variables de entorno, cargar `DATABASE_URL` con tu cadena de Neon.
 4. Esperar el primer deploy y abrir la URL pública del servicio.
 
 Variables importantes ya definidas en el blueprint:
-- `DATABASE_URL`: inyectada desde la base creada en Render
+- `DATABASE_URL`: se define manualmente en Render con la URL de Neon
 - `DB_SSL=true`
 - `DB_SYNC=false` (recomendado en producción)
 - `NODE_ENV=production`
@@ -136,7 +137,7 @@ Configurar el Web Service con:
 
 Y definir estas variables de entorno:
 - `NODE_ENV=production`
-- `DATABASE_URL=<External Database URL de Render Postgres>`
+- `DATABASE_URL=<URL de conexión de Neon>`
 - `DB_DIALECT=postgres`
 - `DB_SSL=true`
 - `DB_SYNC=false`
