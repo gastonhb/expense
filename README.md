@@ -99,6 +99,52 @@ docker run -d --name postgres -e POSTGRES_DB=api_template -e POSTGRES_USER=postg
 npm run dev
 ```
 
+## ☁️ Despliegue en Render (API + PostgreSQL)
+
+### Opción recomendada: Blueprint con `render.yaml`
+
+Este repositorio ya incluye [render.yaml](render.yaml) para crear en Render:
+- Un servicio web Node.js (`expense-api`)
+- Una base PostgreSQL gestionada (`expense-postgres`)
+
+Pasos:
+
+```bash
+# 1) Subir cambios al repositorio remoto
+git add render.yaml README.md
+git commit -m "chore: add render blueprint for api and postgres"
+git push
+```
+
+1. En Render, elegir **New +** -> **Blueprint**.
+2. Conectar tu repositorio y seleccionar la rama.
+3. Render detectará `render.yaml` y aprovisionará API + DB.
+4. Esperar el primer deploy y abrir la URL pública del servicio.
+
+Variables importantes ya definidas en el blueprint:
+- `DATABASE_URL`: inyectada desde la base creada en Render
+- `DB_SSL=true`
+- `DB_SYNC=false` (recomendado en producción)
+- `NODE_ENV=production`
+- `JWT_SECRET`: generado automáticamente por Render
+
+### Si preferís crear todo manualmente en Render
+
+Configurar el Web Service con:
+- Build Command: `corepack enable && pnpm install --frozen-lockfile`
+- Start Command: `pnpm start`
+
+Y definir estas variables de entorno:
+- `NODE_ENV=production`
+- `DATABASE_URL=<External Database URL de Render Postgres>`
+- `DB_DIALECT=postgres`
+- `DB_SSL=true`
+- `DB_SYNC=false`
+- `JWT_SECRET=<secreto de 32+ caracteres>`
+- `JWT_EXPIRES_IN=7d`
+- `JWT_COOKIE_EXPIRES_IN=7`
+- `LOG_LEVEL=info`
+
 ## 📝 Notas
 
 - **Node.js**: Versión 22+ requerida
