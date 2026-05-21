@@ -34,7 +34,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Documentación API con Swagger
-if (config.env === 'development') {
+if (config.swagger.enabled) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions));
   logger.info(`📚 Documentación API disponible en: ${config.url}:${config.port}/api-docs`);
 }
@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
     message: 'API Template - Node.js, Express, Sequelize y PostgreSQL',
     version: '1.0.0',
     environment: config.env,
-    documentation: config.env === 'development' ? `${config.url}:${config.port}/api-docs` : null,
+    documentation: config.swagger.enabled ? `${config.url}/api-docs` : null,
     timestamp: new Date().toISOString()
   });
 });

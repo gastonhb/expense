@@ -145,6 +145,7 @@ Y definir estas variables de entorno:
 - `JWT_EXPIRES_IN=7d`
 - `JWT_COOKIE_EXPIRES_IN=7`
 - `LOG_LEVEL=info`
+- `SWAGGER_ENABLED=true` (si querés exponer `/api-docs` en producción)
 
 ## ▲ Despliegue en Vercel (API + PostgreSQL)
 

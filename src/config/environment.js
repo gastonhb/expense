@@ -102,6 +102,9 @@ const envSchema = Joi.object({
     .valid('error', 'warn', 'info', 'http', 'debug')
     .default('info'),
 
+  SWAGGER_ENABLED: Joi.boolean()
+    .default(false),
+
   // Rate limiting
   RATE_LIMIT_WINDOW_MS: Joi.number()
     .default(15 * 60 * 1000), // 15 minutos
@@ -163,6 +166,10 @@ const config = {
   // Logging configuration
   logging: {
     level: env.LOG_LEVEL
+  },
+
+  swagger: {
+    enabled: env.SWAGGER_ENABLED || env.NODE_ENV === 'development'
   },
 
   // Rate limiting configuration

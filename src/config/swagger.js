@@ -2,6 +2,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const config = require('./environment');
 
+const baseUrl = config.env === 'development' ? `${config.url}:${config.port}` : config.url;
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -19,7 +21,7 @@ const options = {
     },
     servers: [
       {
-        url: `${config.url}:${config.port}/v1`,
+        url: `${baseUrl}/v1`,
         description: 'Development server'
       },
       {
