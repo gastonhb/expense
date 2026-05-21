@@ -49,20 +49,26 @@ const level = () => {
 const transports = () => {
   const env = config.env || 'development';
   const isDevelopment = env === 'development';
+  const isServerless = process.env.VERCEL === '1' || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
 
-  const commonTransports = [
-    // Archivo para errores
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      format: prodFormat
-    }),
-    // Archivo para todos los logs
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-      format: prodFormat
-    })
-  ];
+  const commonTransports = [];
+
+  // En entornos serverless no se debe escribir a disco local.
+  if (!isServerless) {
+    commonTransports.push(
+      // Archivo para errores
+      new winston.transports.File({
+        filename: 'logs/error.log',
+        level: 'error',
+        format: prodFormat
+      }),
+      // Archivo para todos los logs
+      new winston.transports.File({
+        filename: 'logs/combined.log',
+        format: prodFormat
+      })
+    );
+  }
 
   // En desarrollo, agregar console con colores
   if (isDevelopment) {
