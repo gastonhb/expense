@@ -2,6 +2,8 @@ const { Sequelize } = require('sequelize');
 const logger = require('./logger');
 const config = require('./environment');
 
+const postgresDialectModule = config.database.dialect === 'postgres' ? require('pg') : undefined;
+
 class Database {
   static connection = null;
 
@@ -37,6 +39,7 @@ class Database {
   static sequelize = config.database.url
     ? new Sequelize(config.database.url, {
       dialect: config.database.dialect,
+      dialectModule: postgresDialectModule,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
       dialectOptions: Database.getDialectOptions(),
       define: Database.getDefineOptions()
@@ -45,6 +48,7 @@ class Database {
       host: config.database.host,
       port: config.database.port,
       dialect: config.database.dialect,
+      dialectModule: postgresDialectModule,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
       dialectOptions: Database.getDialectOptions(),
       define: Database.getDefineOptions()
