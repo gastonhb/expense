@@ -146,29 +146,26 @@ Y definir estas variables de entorno:
 - `JWT_COOKIE_EXPIRES_IN=7`
 - `LOG_LEVEL=info`
 
-## 🚂 Despliegue en Railway (API + PostgreSQL)
+## ▲ Despliegue en Vercel (API + PostgreSQL)
 
-Este repositorio ya incluye `railway.json` con:
-- Build: `corepack enable && pnpm install --frozen-lockfile`
-- Start: `pnpm start`
-- Healthcheck: `/v1/health/live`
+Este repositorio incluye:
+- `vercel.json` con rewrite global hacia la función serverless
+- `api/index.js` como entrypoint para ejecutar Express en Vercel Functions
 
 ### Pasos rápidos
 
 1. Subir cambios al repositorio remoto.
-2. En Railway, crear un nuevo proyecto desde GitHub y seleccionar este repo.
-3. Agregar un servicio de PostgreSQL en el mismo proyecto.
-4. En el servicio de la API, configurar variables de entorno.
-5. Hacer deploy y validar `https://<tu-dominio>/v1/health/live`.
+2. En Vercel, crear un nuevo proyecto desde GitHub y seleccionar este repo.
+3. En Project Settings -> Environment Variables, configurar las variables.
+4. Hacer deploy y validar `https://<tu-dominio>/v1/health/live`.
 
-### Variables de entorno recomendadas en Railway
+### Variables de entorno recomendadas en Vercel
 
 - `NODE_ENV=production`
-- `PORT=3000` (Railway también la inyecta automáticamente)
 - `URL=https://<tu-dominio-publico>`
-- `DATABASE_URL=<connection string de Railway Postgres o externa>`
+- `DATABASE_URL=<connection string de PostgreSQL>`
 - `DB_DIALECT=postgres`
-- `DB_SSL=false` (usa `true` si tu proveedor externo lo requiere)
+- `DB_SSL=true` (usar `false` solo si tu proveedor no requiere SSL)
 - `DB_SYNC=false` (recomendado en producción)
 - `DB_LOGGING=false`
 - `JWT_SECRET=<secreto de 32+ caracteres>`
@@ -176,10 +173,10 @@ Este repositorio ya incluye `railway.json` con:
 - `JWT_COOKIE_EXPIRES_IN=7`
 - `LOG_LEVEL=info`
 
-### Nota sobre PostgreSQL de Railway
+### Nota sobre Vercel
 
-- Si usas PostgreSQL gestionado por Railway dentro del mismo proyecto normalmente `DB_SSL=false` funciona bien.
-- Si usas Neon, Supabase o RDS externo, suele requerirse `DB_SSL=true`.
+- En Vercel, `PORT` no se configura manualmente para este despliegue serverless.
+- Para evitar recrear tablas en cada cold start, mantener `DB_SYNC=false` en producción.
 
 ## 📝 Notas
 
