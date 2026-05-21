@@ -146,6 +146,41 @@ Y definir estas variables de entorno:
 - `JWT_COOKIE_EXPIRES_IN=7`
 - `LOG_LEVEL=info`
 
+## 🚂 Despliegue en Railway (API + PostgreSQL)
+
+Este repositorio ya incluye `railway.json` con:
+- Build: `corepack enable && pnpm install --frozen-lockfile`
+- Start: `pnpm start`
+- Healthcheck: `/v1/health/live`
+
+### Pasos rápidos
+
+1. Subir cambios al repositorio remoto.
+2. En Railway, crear un nuevo proyecto desde GitHub y seleccionar este repo.
+3. Agregar un servicio de PostgreSQL en el mismo proyecto.
+4. En el servicio de la API, configurar variables de entorno.
+5. Hacer deploy y validar `https://<tu-dominio>/v1/health/live`.
+
+### Variables de entorno recomendadas en Railway
+
+- `NODE_ENV=production`
+- `PORT=3000` (Railway también la inyecta automáticamente)
+- `URL=https://<tu-dominio-publico>`
+- `DATABASE_URL=<connection string de Railway Postgres o externa>`
+- `DB_DIALECT=postgres`
+- `DB_SSL=false` (usa `true` si tu proveedor externo lo requiere)
+- `DB_SYNC=false` (recomendado en producción)
+- `DB_LOGGING=false`
+- `JWT_SECRET=<secreto de 32+ caracteres>`
+- `JWT_EXPIRES_IN=7d`
+- `JWT_COOKIE_EXPIRES_IN=7`
+- `LOG_LEVEL=info`
+
+### Nota sobre PostgreSQL de Railway
+
+- Si usas PostgreSQL gestionado por Railway dentro del mismo proyecto normalmente `DB_SSL=false` funciona bien.
+- Si usas Neon, Supabase o RDS externo, suele requerirse `DB_SSL=true`.
+
 ## 📝 Notas
 
 - **Node.js**: Versión 22+ requerida
