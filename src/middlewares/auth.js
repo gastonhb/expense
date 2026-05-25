@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { promisify } = require('util');
 const config = require('../config/environment');
 const { AppError } = require('./errorHandler');
 const catchAsync = require('../utils/catchAsync');
@@ -51,11 +50,14 @@ const createSendToken = (user, statusCode, res, message = 'Autenticación exitos
 };
 
 const getTokenFromRequest = (req) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    return req.headers.authorization.split(' ')[1];
+  const authorizationHeader = req.headers.authorization;
+
+  if (authorizationHeader) {
+    const match = authorizationHeader.trim().match(/^Bearer\s+(.+)$/i);
+
+    if (match) {
+      return match[1].trim();
+    }
   }
 
   return req.cookies.jwt;
@@ -67,7 +69,7 @@ const isSupabaseIssuer = (issuer) => {
 
   try {
     const url = new URL(issuer);
-    return url.hostname.endsWith('.supabase.co') && url.pathname === '/auth/v1';
+    return url.hostname.endsWith('.supabase.co') && url.pathname.replace(/\/$/, '') === '/auth/v1';
   } catch {
     return false;
   }
@@ -93,37 +95,35 @@ const getJwksForIssuer = async (issuer) => {
   return keys;
 };
 
-const getSupabaseSigningKey = (issuer) => async (header, callback) => {
-  try {
-    const keys = await getJwksForIssuer(issuer);
-    const key = keys.find((currentKey) => currentKey.kid === header.kid);
-
-    if (!key) {
-      return callback(new Error('No se encontro la clave publica del token'));
-    }
-
-    const publicKey = crypto
-      .createPublicKey({ key, format: 'jwk' })
-      .export({ format: 'pem', type: 'spki' });
-
-    callback(null, publicKey);
-  } catch (error) {
-    callback(error);
-  }
-};
-
 const verifySupabaseToken = async (token) => {
   const decoded = jwt.decode(token, { complete: true });
   const issuer = decoded?.payload?.iss;
+  const kid = decoded?.header?.kid;
 
   if (!isSupabaseIssuer(issuer)) {
     throw new Error('El issuer del token no corresponde a Supabase');
   }
 
-  return await promisify(jwt.verify)(token, getSupabaseSigningKey(issuer), {
+  if (!kid) {
+    throw new Error('El token de Supabase no contiene kid');
+  }
+
+  const keys = await getJwksForIssuer(issuer);
+  const key = keys.find((currentKey) => currentKey.kid === kid);
+
+  if (!key) {
+    throw new Error('No se encontro la clave publica del token');
+  }
+
+  const publicKey = crypto
+    .createPublicKey({ key, format: 'jwk' })
+    .export({ format: 'pem', type: 'spki' });
+
+  return jwt.verify(token, publicKey, {
     algorithms: ['ES256', 'RS256'],
     audience: config.supabase.authAudience,
-    issuer
+    issuer,
+    clockTolerance: 10
   });
 };
 
@@ -169,7 +169,7 @@ const getAuthenticatedUser = async (token) => {
     };
   }
 
-  const decoded = await promisify(jwt.verify)(token, config.jwt.secret);
+  const decoded = jwt.verify(token, config.jwt.secret);
   return {
     id: decoded.id,
     authProvider: 'local'
