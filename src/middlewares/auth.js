@@ -77,6 +77,19 @@ const getAuthenticatedUser = async (token) => {
   };
 };
 
+const getFirebaseAuthErrorMessage = (error) => {
+  switch (error.code) {
+  case 'auth/id-token-expired':
+    return 'Tu token de Firebase expiro. Por favor inicia sesion de nuevo.';
+  case 'auth/argument-error':
+    return 'El token de Firebase esta mal formado o no fue enviado como Bearer token.';
+  case 'auth/id-token-revoked':
+    return 'Tu token de Firebase fue revocado. Por favor inicia sesion de nuevo.';
+  default:
+    return 'Token invalido! Por favor inicia sesion de nuevo.';
+  }
+};
+
 // Middleware para proteger rutas
 const protect = catchAsync(async (req, res, next) => {
   const token = getTokenFromRequest(req);
@@ -109,11 +122,12 @@ const protect = catchAsync(async (req, res, next) => {
   } catch (error) {
     logger.warn('Token de Firebase invalido', {
       token: token.substring(0, 20) + '...',
+      code: error.code,
       error: error.message,
       ip: req.ip
     });
 
-    return next(new AppError('Token invalido! Por favor inicia sesion de nuevo.', 401));
+    return next(new AppError(getFirebaseAuthErrorMessage(error), 401));
   }
 });
 

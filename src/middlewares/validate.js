@@ -7,14 +7,15 @@ const logger = require('../config/logger');
 const validate = (schema) => (req, res, next) => {
   const validSchema = pick(schema, ['params', 'query', 'body']);
   const object = pick(req, Object.keys(validSchema));
-  const { value, err } = Joi.compile(validSchema)
+  const { value, error } = Joi.compile(validSchema)
     .prefs({ errors: { label: 'key' } })
     .validate(object, {
-      abortEarly: false
+      abortEarly: false,
+      stripUnknown: true
     });
 
-  if (err) {
-    const details = err.details.map((error) => (
+  if (error) {
+    const details = error.details.map((error) => (
       {
         code: '400',
         name: error.context.label,

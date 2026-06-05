@@ -17,11 +17,11 @@ class SubtypeService extends BaseService {
     }];
   }
 
-  async validateType(typeId, userId) {
+  async validateType(typeId, user) {
     if (!typeId) {
       return;
     }
-    const type = await typeService.findOne({ userId: userId, id: typeId });
+    const type = await typeService.findOne({ id: typeId }, user);
 
     if (!type) {
       throw new ServiceError('The provided type does not exist for this user.');
@@ -29,13 +29,13 @@ class SubtypeService extends BaseService {
   }
 
   async create(data, reqUser) {
-    await this.validateType(data.typeId, reqUser.id);
+    await this.validateType(data.typeId, reqUser);
     return await super.create(data, reqUser);
   }
 
   async update(id, data, reqUser) {
     if (data.typeId) {
-      await this.validateType(data.typeId, reqUser.id);
+      await this.validateType(data.typeId, reqUser);
     }
 
     return await super.update(id, data, reqUser);

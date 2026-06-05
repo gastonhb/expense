@@ -29,40 +29,40 @@ class ExpenseService extends BaseService {
     ];
   }
 
-  async validateType(typeId, userId) {
+  async validateType(typeId, user) {
     if (!typeId) {
       return;
     }
 
-    await typeService.findById(typeId, { userId });
+    await typeService.findById(typeId, user);
   }
 
-  async validateSubtypeType(typeId, subtypeId, userId) {
+  async validateSubtypeType(typeId, subtypeId, user) {
     if (!typeId || !subtypeId) {
       return;
     }
 
-    const subtype = await subtypeService.findById(subtypeId, { userId });
+    const subtype = await subtypeService.findById(subtypeId, user);
 
     if (subtype.typeId !== typeId) {
       throw new ServiceError('The provided subtype does not belong to the specified type.');
     }
   }
 
-  async validatePaymentMethod(paymentMethodId, userId) {
+  async validatePaymentMethod(paymentMethodId, user) {
     if (!paymentMethodId) {
       return;
     }
 
-    await paymentMethodService.findById(paymentMethodId, { userId });
+    await paymentMethodService.findById(paymentMethodId, user);
   }
 
   async create(data, reqUser) {
-    await this.validatePaymentMethod(data.paymentMethodId, reqUser.id);
-    await this.validateType(data.typeId, reqUser.id);
+    await this.validatePaymentMethod(data.paymentMethodId, reqUser);
+    await this.validateType(data.typeId, reqUser);
 
     if (data.typeId && data.subtypeId) {
-      await this.validateSubtypeType(data.typeId, data.subtypeId, reqUser.id);
+      await this.validateSubtypeType(data.typeId, data.subtypeId, reqUser);
     }
 
     return await super.create(data, reqUser);
@@ -73,15 +73,15 @@ class ExpenseService extends BaseService {
       const expense = await this.findById(id, reqUser);
 
       const paymentMethodId = data.paymentMethodId !== undefined ? data.paymentMethodId : expense.paymentMethodId;
-      await this.validatePaymentMethod(paymentMethodId, reqUser.id);
+      await this.validatePaymentMethod(paymentMethodId, reqUser);
 
       const typeId = data.typeId !== undefined ? data.typeId : expense.typeId;
       const subtypeId = data.subtypeId !== undefined ? data.subtypeId : expense.subtypeId;
 
-      await this.validateType(typeId, reqUser.id);
+      await this.validateType(typeId, reqUser);
 
       if (typeId && subtypeId) {
-        await this.validateSubtypeType(typeId, subtypeId, reqUser.id);
+        await this.validateSubtypeType(typeId, subtypeId, reqUser);
       }
     }
     return await super.update(id, data, reqUser);
