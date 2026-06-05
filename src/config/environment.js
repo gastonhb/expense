@@ -56,31 +56,19 @@ const envSchema = Joi.object({
   DB_LOGGING: Joi.boolean()
     .default(false),
 
-  // JWT configuration
-  JWT_SECRET: Joi.string()
-    .min(32)
-    .required()
-    .messages({
-      'any.required': 'JWT_SECRET es requerido',
-      'string.min': 'JWT_SECRET debe tener al menos 32 caracteres'
-    }),
-
-  JWT_EXPIRES_IN: Joi.string()
-    .default('7d'),
-
-  JWT_COOKIE_EXPIRES_IN: Joi.number()
-    .default(7),
-
-  SUPABASE_URL: Joi.string()
-    .uri()
+  // Firebase Auth configuration
+  FIREBASE_PROJECT_ID: Joi.string()
     .optional(),
 
-  SUPABASE_AUTH_ISSUER: Joi.string()
-    .uri()
+  FIREBASE_CLIENT_EMAIL: Joi.string()
+    .email()
     .optional(),
 
-  SUPABASE_AUTH_AUDIENCE: Joi.string()
-    .default('authenticated'),
+  FIREBASE_PRIVATE_KEY: Joi.string()
+    .optional(),
+
+  FIREBASE_SERVICE_ACCOUNT_JSON: Joi.string()
+    .optional(),
 
   // Pagination configuration
   PAGINATION_DEFAULT_PAGE_SIZE: Joi.number()
@@ -142,17 +130,12 @@ const config = {
     logging: env.DB_LOGGING
   },
 
-  // JWT configuration
-  jwt: {
-    secret: env.JWT_SECRET,
-    expiresIn: env.JWT_EXPIRES_IN,
-    cookieExpiresIn: env.JWT_COOKIE_EXPIRES_IN
-  },
-
-  supabase: {
-    url: env.SUPABASE_URL,
-    authIssuer: env.SUPABASE_AUTH_ISSUER || (env.SUPABASE_URL ? `${env.SUPABASE_URL.replace(/\/$/, '')}/auth/v1` : undefined),
-    authAudience: env.SUPABASE_AUTH_AUDIENCE
+  // Firebase Auth configuration
+  firebase: {
+    projectId: env.FIREBASE_PROJECT_ID,
+    clientEmail: env.FIREBASE_CLIENT_EMAIL,
+    privateKey: env.FIREBASE_PRIVATE_KEY,
+    serviceAccountJson: env.FIREBASE_SERVICE_ACCOUNT_JSON
   },
 
   // Pagination configuration

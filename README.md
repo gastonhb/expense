@@ -127,7 +127,9 @@ Variables importantes ya definidas en el blueprint:
 - `DB_SSL=true`
 - `DB_SYNC=false` (recomendado en producción)
 - `NODE_ENV=production`
-- `JWT_SECRET`: generado automáticamente por Render
+- `FIREBASE_PROJECT_ID`: ID del proyecto de Firebase
+- `FIREBASE_CLIENT_EMAIL`: email del service account de Firebase
+- `FIREBASE_PRIVATE_KEY`: private key del service account de Firebase
 
 ### Si preferís crear todo manualmente en Render
 
@@ -141,9 +143,9 @@ Y definir estas variables de entorno:
 - `DB_DIALECT=postgres`
 - `DB_SSL=true`
 - `DB_SYNC=false`
-- `JWT_SECRET=<secreto de 32+ caracteres>`
-- `JWT_EXPIRES_IN=7d`
-- `JWT_COOKIE_EXPIRES_IN=7`
+- `FIREBASE_PROJECT_ID=<id-del-proyecto-firebase>`
+- `FIREBASE_CLIENT_EMAIL=<service-account-email>`
+- `FIREBASE_PRIVATE_KEY=<private-key-con-\n>`
 - `LOG_LEVEL=info`
 - `SWAGGER_ENABLED=true` (si querés exponer `/api-docs` en producción)
 
@@ -169,9 +171,9 @@ Este repositorio incluye:
 - `DB_SSL=true` (usar `false` solo si tu proveedor no requiere SSL)
 - `DB_SYNC=false` (recomendado en producción)
 - `DB_LOGGING=false`
-- `JWT_SECRET=<secreto de 32+ caracteres>`
-- `JWT_EXPIRES_IN=7d`
-- `JWT_COOKIE_EXPIRES_IN=7`
+- `FIREBASE_PROJECT_ID=<id-del-proyecto-firebase>`
+- `FIREBASE_CLIENT_EMAIL=<service-account-email>`
+- `FIREBASE_PRIVATE_KEY=<private-key-con-\n>`
 - `LOG_LEVEL=info`
 
 ### Nota sobre Vercel
