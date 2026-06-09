@@ -43,34 +43,63 @@ const clientMessage = (err) => {
 };
 
 const sendErrorDev = (err, req, res) => {
+  const statusCode = err.statusCode || 500;
+
   // API
   if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/v1')) {
-    return res.status(err.statusCode).json({
-      status: 'error',
+    const response = {
+      status: err.status || 'error',
+      statusCode: statusCode,
       message: clientMessage(err),
-      stack: err.stack,
       timestamp: new Date().toISOString()
-    });
+    };
+
+    // Incluir detalles de validación si existen
+    if (err.details) {
+      response.errors = err.details;
+    } else {
+      response.stack = err.stack;
+    }
+
+    return res.status(statusCode).json(response);
   }
 
   // Para cualquier ruta (ya que es una API REST)
   logger.error('ERROR', err);
-  return res.status(err.statusCode).json({
-    status: 'error',
+  const response = {
+    status: err.status || 'error',
+    statusCode: statusCode,
     message: clientMessage(err),
-    stack: err.stack,
     timestamp: new Date().toISOString()
-  });
+  };
+
+  if (err.details) {
+    response.errors = err.details;
+  } else {
+    response.stack = err.stack;
+  }
+
+  return res.status(statusCode).json(response);
 };
 
 const sendErrorProd = (err, req, res) => {
+  const statusCode = err.statusCode || 500;
+
   // Operational, trusted error: send message to client
   if (err.isOperational) {
-    return res.status(err.statusCode).json({
-      status: 'error',
+    const response = {
+      status: err.status || 'error',
+      statusCode: statusCode,
       message: clientMessage(err),
       timestamp: new Date().toISOString()
-    });
+    };
+
+    // Incluir detalles de validación si existen
+    if (err.details) {
+      response.errors = err.details;
+    }
+
+    return res.status(statusCode).json(response);
   }
 
   // Programming or other unknown error: don't leak error details
@@ -79,6 +108,7 @@ const sendErrorProd = (err, req, res) => {
   // 2) Send generic message
   return res.status(500).json({
     status: 'error',
+    statusCode: 500,
     message: 'Algo salió mal!',
     timestamp: new Date().toISOString()
   });
@@ -93,6 +123,10 @@ const globalErrorHandler = (err, req, res, _next) => {
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     error.message = err.message;
+    error.statusCode = err.statusCode;
+    error.status = err.status;
+    error.details = err.details;
+    error.isOperational = err.isOperational;
 
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);

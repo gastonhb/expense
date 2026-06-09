@@ -5,8 +5,7 @@
   "main": "index.js",
   "packageManager": "pnpm@11.1.2",
   "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -15,9 +14,9 @@
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check-updates": "npm outdated",
-    "security-audit": "npm audit",
-    "install:clean": "npm install --loglevel=error"
+    "check-updates": "pnpm outdated",
+    "security-audit": "pnpm audit",
+    "install:clean": "pnpm install"
   },
   "author": "Gastón Herrera Barón",
   "license": "ISC",

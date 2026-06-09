@@ -13,8 +13,9 @@ const find = {
 
 const create = {
   body: Joi.object().keys({
-    code: Joi.string().trim().required(),
-    name: Joi.string().trim().required()
+    name: Joi.string().trim().required(),
+    color: Joi.string().trim(),
+    icon: Joi.string().trim()
   })
 };
 
@@ -29,8 +30,9 @@ const update = {
     id: Joi.string().custom(uuid).required()
   }),
   body: Joi.object().keys({
-    code: Joi.string().trim(),
-    name: Joi.string().trim()
+    name: Joi.string().trim(),
+    color: Joi.string().trim(),
+    icon: Joi.string().trim()
   }).min(1)
 };
 

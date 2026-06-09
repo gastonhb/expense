@@ -16,6 +16,14 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    icon: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     typeId: {
       type: DataTypes.UUID,
       allowNull: false,

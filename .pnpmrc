@@ -1,0 +1,4 @@
+# pnpm configuration
+audit=false
+fund=false
+log-level=error

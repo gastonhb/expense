@@ -10,21 +10,17 @@ git clone <tu-repo>
 cd api-template
 
 # Instalar dependencias (sin warnings deprecated)
-npm install
-
-# O usar el comando personalizado para instalación limpia
-npm run install:clean
+pnpm install
 ```
 
 ## 📦 Scripts Disponibles
 
 ```bash
-npm start           # Iniciar en producción
-npm run dev         # Desarrollo con nodemon
-npm run dev:watch   # Desarrollo con --watch nativo
-npm run lint        # Verificar código con ESLint
-npm run lint:fix    # Corregir automáticamente con ESLint
-npm run install:clean # Instalar sin warnings deprecated
+pnpm start           # Iniciar en producción
+pnpm dev             # Desarrollo con nodemon
+pnpm dev:watch       # Desarrollo con --watch nativo
+pnpm lint            # Verificar código con ESLint
+pnpm lint:fix        # Corregir automáticamente con ESLint
 ```
 
 ## 🔧 Configuración
@@ -96,7 +92,7 @@ docker run -d --name postgres -e POSTGRES_DB=api_template -e POSTGRES_USER=postg
 # En .env usar variables DB_* (DB_DIALECT, DB_HOST, DB_PORT, etc.)
 
 # Desarrollo
-npm run dev
+pnpm dev
 ```
 
 ## ☁️ Despliegue en Render (API + PostgreSQL)
@@ -184,8 +180,8 @@ Este repositorio incluye:
 ## 📝 Notas
 
 - **Node.js**: Versión 22+ requerida
-- **npm**: Versión 10+ requerida
+- **pnpm**: Versión 11+ requerida
 - **PostgreSQL**: Compatible con versiones 14+
-- **Warnings deprecated**: Suprimidos via `.npmrc` con `loglevel=error`
+- **Warnings deprecated**: Suprimidos via `.pnpmrc` con `log-level=error`
 
-El archivo `.npmrc` está configurado para mostrar solo errores, ocultando warnings de dependencias deprecated que no podemos controlar (ej: swagger dependencies). Los overrides en package.json mantienen la estabilidad de las versiones.
+El archivo `.pnpmrc` está configurado para mostrar solo errores, ocultando warnings de dependencias deprecated que no podemos controlar (ej: swagger dependencies). Los overrides en package.json mantienen la estabilidad de las versiones.

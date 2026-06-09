@@ -39,6 +39,12 @@
  *         description:
  *           type: string
  *           description: Descripcion detallada del tipo
+ *         color:
+ *           type: string
+ *           description: Color asociado al tipo
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al tipo
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -51,6 +57,8 @@
  *         id: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
  *         name: "Hogar"
  *         description: "Gastos relacionados con el mantenimiento y servicios de la vivienda"
+ *         color: "#3498db"
+ *         icon: "home"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
  *
@@ -65,9 +73,17 @@
  *         description:
  *           type: string
  *           description: Descripcion detallada del tipo
+ *         color:
+ *           type: string
+ *           description: Color asociado al tipo
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al tipo
  *       example:
  *         name: "Hogar"
  *         description: "Gastos relacionados con el mantenimiento y servicios de la vivienda"
+ *         color: "#3498db"
+ *         icon: "home"
  *
  *     TypeList:
  *       type: object
@@ -101,6 +117,12 @@
  *         description:
  *           type: string
  *           description: Descripcion detallada del subtipo
+ *         color:
+ *           type: string
+ *           description: Color asociado al subtipo
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al subtipo
  *         typeId:
  *           type: string
  *           format: uuid
@@ -117,6 +139,8 @@
  *         id: "b2c3d4e5-f6a7-4748-9b1c-2d3e4f5a6b7c"
  *         name: "Supermercado"
  *         description: "Compras de alimentos y productos de limpieza"
+ *         color: "#27ae60"
+ *         icon: "shopping-cart"
  *         typeId: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
@@ -133,6 +157,12 @@
  *         description:
  *           type: string
  *           description: Descripcion detallada del subtipo
+ *         color:
+ *           type: string
+ *           description: Color asociado al subtipo
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al subtipo
  *         typeId:
  *           type: string
  *           format: uuid
@@ -140,6 +170,8 @@
  *       example:
  *         name: "Supermercado"
  *         description: "Compras de alimentos y productos de limpieza"
+ *         color: "#27ae60"
+ *         icon: "shopping-cart"
  *         typeId: "a1b2c3d4-e5f6-4748-9a0b-1c2d3e4f5a6b"
  *
  *     SubtypeList:
@@ -173,6 +205,12 @@
  *         description:
  *           type: string
  *           description: Descripcion del metodo de pago
+ *         color:
+ *           type: string
+ *           description: Color asociado al metodo de pago
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al metodo de pago
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -185,6 +223,8 @@
  *         id: "c3d4e5f6-a7b8-4748-9c2d-3e4f5a6b7c8d"
  *         name: "Transferencia"
  *         description: "Transferencia bancaria directa"
+ *         color: "#2ecc71"
+ *         icon: "bank"
  *         createdAt: "2026-05-05T14:00:00.000Z"
  *         updatedAt: "2026-05-05T14:00:00.000Z"
  *
@@ -199,9 +239,17 @@
  *         description:
  *           type: string
  *           description: Descripcion del metodo de pago
+ *         color:
+ *           type: string
+ *           description: Color asociado al metodo de pago
+ *         icon:
+ *           type: string
+ *           description: Icono asociado al metodo de pago
  *       example:
  *         name: "Transferencia"
  *         description: "Transferencia bancaria directa"
+ *         color: "#2ecc71"
+ *         icon: "bank"
  *
  *     PaymentMethodList:
  *       type: object
