@@ -3,3 +3,7 @@ module.exports.paymentMethodValidation = require('./paymentMethod.validation');
 module.exports.subtypeValidation = require('./subtype.validation');
 module.exports.typeValidation = require('./type.validation');
 module.exports.userValidation = require('./user.validation');
+module.exports.personValidation = require('./person.validation');
+module.exports.groupValidation = require('./group.validation');
+module.exports.incomeValidation = require('./income.validation');
+module.exports.incomeTypeValidation = require('./incomeType.validation');

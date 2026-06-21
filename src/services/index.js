@@ -3,3 +3,7 @@ module.exports.paymentMethodService = require('./paymentMethod.service');
 module.exports.subtypeService = require('./subtype.service');
 module.exports.typeService = require('./type.service');
 module.exports.userService = require('./user.service');
+module.exports.incomeService = require('./income.service');
+module.exports.incomeTypeService = require('./incomeType.service');
+module.exports.personService = require('./person.service');
+module.exports.groupService = require('./group.service');

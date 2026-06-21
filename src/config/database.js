@@ -67,7 +67,7 @@ class Database {
       await Database.sequelize.authenticate();
 
       if (config.database.sync) {
-        await Database.sequelize.sync();
+        await Database.sequelize.sync({ alter: true });
       }
 
       Database.connection = Database.sequelize;

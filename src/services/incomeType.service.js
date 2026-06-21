@@ -1,9 +1,9 @@
-const { Type } = require('../models');
+const { IncomeType } = require('../models');
 const BaseService = require('./BaseService');
 
-class TypeService extends BaseService {
+class IncomeTypeService extends BaseService {
   constructor() {
-    super(Type, 'Type');
+    super(IncomeType, 'IncomeType');
     this.defaultSort = '-createdAt';
     this.textSearchFields = ['name', 'description'];
   }
@@ -19,4 +19,4 @@ class TypeService extends BaseService {
   }
 }
 
-module.exports = new TypeService();
+module.exports = new IncomeTypeService();

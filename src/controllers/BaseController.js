@@ -17,7 +17,7 @@ class BaseControllerCore extends BaseReadOnlyController {
 
   async delete(req, res) {
     const { params } = req;
-    await this.service.delete(params.id, req.user);
+    await this.service.delete(params.id);
     return ResponseHelper.deleted(res);
   }
 }

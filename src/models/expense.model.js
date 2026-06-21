@@ -55,6 +55,14 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
+    groupId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'groups',
+        key: 'id'
+      }
+    },
     ...auditFields(DataTypes)
   }, {
     tableName: 'expenses',
@@ -77,6 +85,10 @@ module.exports = (sequelize) => {
     Expense.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user'
+    });
+    Expense.belongsTo(models.Group, {
+      foreignKey: 'groupId',
+      as: 'group'
     });
     Expense.belongsTo(models.User, {
       foreignKey: 'createdBy',

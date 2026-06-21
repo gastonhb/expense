@@ -3,3 +3,7 @@ module.exports.paymentMethodController = require('./paymentMethod.controller');
 module.exports.subtypeController = require('./subtype.controller');
 module.exports.typeController = require('./type.controller');
 module.exports.userController = require('./user.controller');
+module.exports.incomeController = require('./income.controller');
+module.exports.incomeTypeController = require('./incomeType.controller');
+module.exports.personController = require('./person.controller');
+module.exports.groupController = require('./group.controller');

@@ -64,6 +64,7 @@ class ExpenseService extends BaseService {
     if (data.typeId && data.subtypeId) {
       await this.validateSubtypeType(data.typeId, data.subtypeId, reqUser);
     }
+    data.userId = reqUser.id;
 
     return await super.create(data, reqUser);
   }
@@ -84,6 +85,8 @@ class ExpenseService extends BaseService {
         await this.validateSubtypeType(typeId, subtypeId, reqUser);
       }
     }
+    data.userId = reqUser.id;
+
     return await super.update(id, data, reqUser);
   }
 }

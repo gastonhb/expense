@@ -51,7 +51,7 @@ class BaseReadOnlyControllerCore {
 
   async find(req, res) {
     const { filters, options } = this.splitFindQuery(req.query);
-    const result = await this.service.find(filters, options, req.user);
+    const result = await this.service.find(filters, options);
 
     if (!this.isPaginationEnabled(options)) {
       return ResponseHelper.success(res, result);
@@ -63,7 +63,7 @@ class BaseReadOnlyControllerCore {
 
   async findById(req, res) {
     const { params } = req;
-    const result = await this.service.findById(params.id, req.user);
+    const result = await this.service.findById(params.id);
     return ResponseHelper.success(res, result);
   }
 

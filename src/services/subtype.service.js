@@ -30,6 +30,7 @@ class SubtypeService extends BaseService {
 
   async create(data, reqUser) {
     await this.validateType(data.typeId, reqUser);
+    data.userId = reqUser.id;
     return await super.create(data, reqUser);
   }
 
@@ -37,6 +38,7 @@ class SubtypeService extends BaseService {
     if (data.typeId) {
       await this.validateType(data.typeId, reqUser);
     }
+    data.userId = reqUser.id;
 
     return await super.update(id, data, reqUser);
   }

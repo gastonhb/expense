@@ -8,35 +8,6 @@ class BaseReadOnlyService {
     this.entityName = entityName;
   }
 
-  shouldEnforceUserScope() {
-    return Boolean(this.model.rawAttributes?.userId) && this.enforceUserScope !== false;
-  }
-
-  resolveRequestUserId(reqUser) {
-    return reqUser?.id ?? reqUser?.userId ?? null;
-  }
-
-  getScopedWhere(reqUser) {
-    if (!this.shouldEnforceUserScope()) {
-      return {};
-    }
-
-    const userId = this.resolveRequestUserId(reqUser);
-
-    if (!userId) {
-      throw new ServiceError('Debes estar autenticado para acceder a este recurso');
-    }
-
-    return { userId };
-  }
-
-  applyUserScope(where = {}, reqUser) {
-    return {
-      ...where,
-      ...this.getScopedWhere(reqUser)
-    };
-  }
-
   /**
    * Helper para búsqueda de texto en múltiples campos
    * @param {Array} fields - Campos donde buscar
@@ -127,8 +98,8 @@ class BaseReadOnlyService {
    * @param {Object} _context - Contexto de la consulta
    * @returns {Array|Object|undefined} Includes de Sequelize
    */
-  getFindIncludes(_context = {}) {
-    return this.findIncludes;
+  get findIncludes() {
+    return undefined;
   }
 
   /**
@@ -137,8 +108,8 @@ class BaseReadOnlyService {
    * @param {Object} context - Contexto de la consulta
    * @returns {Array|Object|undefined} Includes de Sequelize
    */
-  getFindOneIncludes(context = {}) {
-    return this.findOneIncludes ?? this.getFindIncludes(context);
+  get findOneIncludes() {
+    return this.findIncludes;
   }
 
   extractFindFilters(filters = {}) {
@@ -153,17 +124,6 @@ class BaseReadOnlyService {
       ...safeFilters
     } = filters;
     return safeFilters;
-  }
-
-  resolveFindOptions(options = {}) {
-    return {
-      paginate: options.paginate ?? true,
-      page: options.page ?? options._page,
-      limit: options.limit ?? options._limit,
-      order: options.order ?? options._order,
-      include: options.include,
-      attributes: options.attributes
-    };
   }
 
   buildOrder(orderOption, validOrderFields) {
@@ -184,31 +144,25 @@ class BaseReadOnlyService {
     return order;
   }
 
-  async find(filters = {}, options = {}, reqUser = null) {
+  async find(filters = {}, options = {}) {
     const safeFilters = this.extractFindFilters(filters);
-    const resolvedOptions = this.resolveFindOptions(options);
-    const paginate = resolvedOptions.paginate;
 
     // Configurar paginación
-    const hasCustomLimit = resolvedOptions.limit !== undefined;
-    const page = parseInt(resolvedOptions.page) || 1;
-    const limit = hasCustomLimit ? Math.min(parseInt(resolvedOptions.limit), 100) : config.pagination.defaultPageSize;
+    const page = options._page ? Number(options._page) : 1;
+    const limit = options._limit ? Number(options._limit) : config.pagination.defaultPageSize;
 
     // Validar página mínima
     if (page < 1) {
-      throw new ServiceError('La página debe ser mayor a 0');
+      throw new ServiceError('Page must be greater than 0');
     }
 
-    if (hasCustomLimit && (!Number.isInteger(limit) || limit < 1)) {
-      throw new ServiceError('El limite debe ser mayor a 0');
+    if ((!Number.isInteger(limit) || limit < 1)) {
+      throw new ServiceError('Limit must be a positive integer');
     }
-
-    // Calcular skip
-    const skip = (page - 1) * limit;
 
     const validOrderFields = Object.keys(this.model.rawAttributes || {});
     const defaultSort = this.defaultSort || 'createdAt';
-    const orderOption = resolvedOptions.order || defaultSort;
+    const orderOption = options._order || defaultSort;
     const order = this.buildOrder(orderOption, validOrderFields);
 
     let searchFilters;
@@ -218,68 +172,41 @@ class BaseReadOnlyService {
       searchFilters = this.applyAutoFilters(safeFilters);
     }
 
-    searchFilters = this.applyUserScope(searchFilters, reqUser);
-
     const findOptions = {
       where: searchFilters,
       order
     };
 
+    const paginate = options.paginate ?? true;
     if (paginate) {
-      findOptions.offset = skip;
+      findOptions.offset = (page - 1) * limit;
       findOptions.limit = limit;
-    } else if (hasCustomLimit) {
-      findOptions.limit = limit;
-      if (page > 1) {
-        findOptions.offset = skip;
-      }
     }
 
-    const defaultIncludes = this.getFindIncludes({
-      filters: safeFilters,
-      options: resolvedOptions,
-      where: searchFilters
-    });
-
-    const includes = resolvedOptions.include !== undefined ? resolvedOptions.include : defaultIncludes;
-
-    if (includes !== undefined) {
-      findOptions.include = includes;
+    if (!options.includes && this.findIncludes) {
+      findOptions.include = this.findIncludes;
+    } else if (options.includes) {
+      findOptions.include = options.includes;
     }
 
-    if (resolvedOptions.attributes !== undefined) {
-      findOptions.attributes = resolvedOptions.attributes;
-    } else if (this.defaultSelect) {
-      findOptions.attributes = this.defaultSelect;
+    if (options.attributes) {
+      findOptions.attributes = options.attributes;
     }
 
-    if (!paginate) {
-      return await this.model.findAll(findOptions);
-    }
-
-    const { rows: docs, count } = await this.model.findAndCountAll(findOptions);
+    const { rows, count } = await this.model.findAndCountAll(findOptions);
 
     return {
-      results: docs,
+      results: rows,
       count
     };
   }
 
-  async findById(id, reqUser = null) {
-    const findOptions = {};
-    const defaultIncludes = this.getFindOneIncludes({ id });
-
-    if (defaultIncludes !== undefined) {
-      findOptions.include = defaultIncludes;
+  async findById(id, options = {}) {
+    if (!id) {
+      throw new ServiceError('Invalid query');
     }
 
-    if (this.defaultSelect) {
-      findOptions.attributes = this.defaultSelect;
-    }
-
-    findOptions.where = this.applyUserScope({ id }, reqUser);
-
-    const element = await this.model.findOne(findOptions);
+    const element = await this.findOne({ id }, options);
     if (!element) {
       throw new NotFoundServiceError(this.entityName, id);
     }
@@ -288,42 +215,13 @@ class BaseReadOnlyService {
   }
 
   // Método para encontrar uno con filtros personalizados
-  async findOne(filters = {}, reqUser = null) {
-    const customFilters = this.buildCustomFilters ?
-      this.buildCustomFilters(filters) : filters;
-
-    const findOptions = {
-      where: this.applyUserScope(customFilters, reqUser)
-    };
-
-    const defaultIncludes = this.getFindOneIncludes({
-      filters,
-      where: this.applyUserScope(customFilters, reqUser)
-    });
-
-    if (defaultIncludes !== undefined) {
-      findOptions.include = defaultIncludes;
+  async findOne(filters = {}, options = {}) {
+    if(!options.include && this.findOneIncludes) {
+      options.include = this.findIncludes;
     }
 
-    if (this.defaultSelect) {
-      findOptions.attributes = this.defaultSelect;
-    }
-
-    return await this.model.findOne(findOptions);
-  }
-
-  // Método para contar elementos con filtros personalizados
-  async count(filters = {}, reqUser = null) {
-    const customFilters = this.buildCustomFilters ?
-      this.buildCustomFilters(filters) : filters;
-
-    return await this.model.count({ where: this.applyUserScope(customFilters, reqUser) });
-  }
-
-  // Método para verificar si existe un elemento con ciertos filtros
-  async exists(filters, reqUser = null) {
-    const total = await this.model.count({ where: this.applyUserScope(filters, reqUser), limit: 1 });
-    return total > 0;
+    const response = await this.find(filters, { ...options, limit: 1, page: 1 });
+    return response.results[0] ?? null;
   }
 }
 
