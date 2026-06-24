@@ -10,7 +10,7 @@ class SubtypeService extends BaseService {
     this.textSearchFields = ['name', 'description'];
   }
 
-  getFindIncludes() {
+  get findIncludes() {
     return [{
       model: Type,
       as: 'type'

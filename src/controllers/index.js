@@ -7,3 +7,5 @@ module.exports.incomeController = require('./income.controller');
 module.exports.incomeTypeController = require('./incomeType.controller');
 module.exports.personController = require('./person.controller');
 module.exports.groupController = require('./group.controller');
+module.exports.budgetController = require('./budget.controller');
+module.exports.monthlyBudgetController = require('./monthlyBudget.controller');

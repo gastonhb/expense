@@ -12,7 +12,7 @@ class ExpenseService extends BaseService {
     this.dateRangeFields = ['date'];
   }
 
-  getFindIncludes() {
+  get findIncludes() {
     return [
       {
         model: PaymentMethod,

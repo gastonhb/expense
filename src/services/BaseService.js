@@ -69,6 +69,24 @@ class BaseService extends BaseReadOnlyService {
 
     return await element.destroy();
   }
+
+  async bulkCreate(data, reqUser, { transaction } = {}) {
+    if (!transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.bulkCreate(data, reqUser, { transaction });
+      });
+    };
+
+    try {
+      if (!reqUser?.id) {
+        throw new UnauthorizedServiceError('Debes estar autenticado para crear este recurso', 'create');
+      }
+
+      return await this.model.bulkCreate(data, { transaction });
+    } catch (err) {
+      throw new ServiceError(err);
+    }
+  }
 }
 
 module.exports = BaseService;

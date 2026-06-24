@@ -7,3 +7,5 @@ module.exports.personValidation = require('./person.validation');
 module.exports.groupValidation = require('./group.validation');
 module.exports.incomeValidation = require('./income.validation');
 module.exports.incomeTypeValidation = require('./incomeType.validation');
+module.exports.budgetValidation = require('./budget.validation');
+module.exports.monthlyBudgetValidation = require('./monthlyBudget.validation');

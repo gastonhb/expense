@@ -9,6 +9,8 @@ const typeRoute = require('./type.route.js');
 const userRoute = require('./user.route.js');
 const personRoute = require('./person.route.js');
 const groupRoute = require('./group.route.js');
+const monthlyBudgetRoute = require('./monthlyBudget.route.js');
+const budgetRoute = require('./budget.route.js');
 const healthRoute = require('./health.js');
 const router = express.Router();
 
@@ -22,6 +24,8 @@ router.use('/types', typeRoute);
 router.use('/users', userRoute);
 router.use('/persons', personRoute);
 router.use('/groups', groupRoute);
+router.use('/monthly-budgets', monthlyBudgetRoute);
+router.use('/budgets', budgetRoute);
 router.use('/health', healthRoute);
 
 

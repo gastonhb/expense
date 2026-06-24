@@ -13,7 +13,8 @@ const Expense = require('./expense.model')(Database.getSequelize());
 const IncomeType = require('./incomeType.model')(Database.getSequelize());
 const Income = require('./income.model')(Database.getSequelize());
 
-
+const MonthlyBudget = require('./monthlyBudget.model')(Database.getSequelize());
+const Budget = require('./budget.model')(Database.getSequelize());
 
 
 const models = {
@@ -26,7 +27,9 @@ const models = {
   IncomeType,
   Person,
   Group,
-  PersonGroup
+  PersonGroup,
+  MonthlyBudget,
+  Budget
 };
 
 Object.values(models).forEach((model) => {

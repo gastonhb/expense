@@ -7,3 +7,5 @@ module.exports.incomeService = require('./income.service');
 module.exports.incomeTypeService = require('./incomeType.service');
 module.exports.personService = require('./person.service');
 module.exports.groupService = require('./group.service');
+module.exports.budgetService = require('./budget.service');
+module.exports.monthlyBudgetService = require('./monthlyBudget.service');

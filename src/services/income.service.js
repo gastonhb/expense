@@ -9,7 +9,7 @@ class IncomeService extends BaseService {
     this.defaultSort = '-createdAt';
   }
 
-  getFindIncludes() {
+  get findIncludes() {
     return [{
       model: IncomeType,
       as: 'incomeType'
