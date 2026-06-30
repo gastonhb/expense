@@ -14,8 +14,8 @@ router.use(protect);
 /**
  * @swagger
  * tags:
- *   name: Budgets
- *   description: Operaciones CRUD para gastos
+ *   name: Monthly Budgets
+ *   description: Operaciones CRUD para presupuestos mensuales
  */
 
 router.route('/')

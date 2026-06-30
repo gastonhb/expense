@@ -14,8 +14,8 @@ router.use(protect);
 /**
  * @swagger
  * tags:
- *   name: PaymentMethods
- *   description: Operaciones CRUD para metodos de pago
+ *   name: Payment Methods
+ *   description: Operaciones CRUD para métodos de pago
  */
 
 router.route('/')

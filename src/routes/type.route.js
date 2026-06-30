@@ -15,7 +15,7 @@ router.use(protect);
  * @swagger
  * tags:
  *   name: Types
- *   description: Operaciones CRUD para tipos de gastos
+ *   description: Operaciones CRUD para tipos de gasto
  */
 
 router.route('/')

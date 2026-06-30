@@ -9,3 +9,11 @@ module.exports.personService = require('./person.service');
 module.exports.groupService = require('./group.service');
 module.exports.budgetService = require('./budget.service');
 module.exports.monthlyBudgetService = require('./monthlyBudget.service');
+module.exports.shoppingService = require('./shopping.service');
+module.exports.quotaService = require('./quota.service');
+module.exports.debtorService = require('./debtor.service');
+module.exports.debtService = require('./debt.service');
+module.exports.debtPaymentService = require('./debtPayment.service');
+module.exports.installmentDebtService = require('./installmentDebt.service');
+module.exports.installmentDebtDetailService = require('./installmentDebtDetail.service');
+

@@ -16,6 +16,15 @@ const Income = require('./income.model')(Database.getSequelize());
 const MonthlyBudget = require('./monthlyBudget.model')(Database.getSequelize());
 const Budget = require('./budget.model')(Database.getSequelize());
 
+const Shopping = require('./shopping.model')(Database.getSequelize());
+const Quota = require('./quota.model')(Database.getSequelize());
+
+const Debtor = require('./debtor.model')(Database.getSequelize());
+const Debt = require('./debt.model')(Database.getSequelize());
+const DebtPayment = require('./debtPayment.model')(Database.getSequelize());
+const InstallmentDebt = require('./installmentDebt.model')(Database.getSequelize());
+const InstallmentDebtDetail = require('./installmentDebtDetail.model')(Database.getSequelize());
+
 
 const models = {
   User,
@@ -29,7 +38,14 @@ const models = {
   Group,
   PersonGroup,
   MonthlyBudget,
-  Budget
+  Budget,
+  Shopping,
+  Quota,
+  Debtor,
+  Debt,
+  DebtPayment,
+  InstallmentDebt,
+  InstallmentDebtDetail
 };
 
 Object.values(models).forEach((model) => {

@@ -5,9 +5,9 @@ const { uuid, orderString, optionalUuid } = require('./custom.validation');
 const find = {
   query: Joi.object().keys({
     ...paginationAndOrder,
-    date: Joi.date().iso(),
-    dateFrom: Joi.date().iso(),
-    dateTo: Joi.date().iso(),
+    date: Joi.string().isoDate(),
+    dateFrom: Joi.string().isoDate(),
+    dateTo: Joi.string().isoDate(),
     incomeTypeId: Joi.any().custom(optionalUuid),
     description: Joi.string().trim(),
     _order: Joi.string().custom(orderString)
@@ -17,7 +17,7 @@ const find = {
 
 const create = {
   body: Joi.object().keys({
-    date: Joi.date().iso().required(),
+    date: Joi.string().isoDate().required(),
     amount: Joi.number().precision(2).min(0).required(),
     incomeTypeId: Joi.any().custom(optionalUuid),
     description: Joi.string().trim().allow('')
@@ -35,7 +35,7 @@ const update = {
     id: Joi.string().custom(uuid).required()
   }),
   body: Joi.object().keys({
-    date: Joi.date().iso(),
+    date: Joi.string().isoDate(),
     amount: Joi.number().precision(2).min(0).required(),
     incomeTypeId: Joi.any().custom(optionalUuid),
     description: Joi.string().trim().allow('')

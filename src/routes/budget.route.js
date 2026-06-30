@@ -29,4 +29,8 @@ router.route('/:id')
   .delete(validate(validation.destroy), controller.delete)
   .all(methodNotAllowed);
 
+router.route('/:id/pay')
+  .post(createLimiter, validate(validation.payBudget), controller.payBudget)
+  .all(methodNotAllowed);
+
 module.exports = router;

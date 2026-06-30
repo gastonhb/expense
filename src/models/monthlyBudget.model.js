@@ -43,6 +43,10 @@ module.exports = (sequelize) => {
       foreignKey: 'monthlyBudgetId',
       as: 'budgets'
     });
+    MonthlyBudget.hasMany(models.Quota, {
+      foreignKey: 'monthlyBudgetId',
+      as: 'quotas'
+    });
   };
 
   return MonthlyBudget;

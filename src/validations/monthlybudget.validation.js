@@ -5,14 +5,14 @@ const { uuid, orderString } = require('./custom.validation');
 const find = {
   query: Joi.object().keys({
     ...paginationAndOrder,
-    date: Joi.date().iso(),
+    date: Joi.string().isoDate(),
     _order: Joi.string().custom(orderString)
   })
 };
 
 const create = {
   body: Joi.object().keys({
-    date: Joi.date().iso().required()
+    date: Joi.string().isoDate().required()
   })
 };
 

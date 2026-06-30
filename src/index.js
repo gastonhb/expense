@@ -11,7 +11,7 @@ try {
     return Promise.race([
       Database.connect(),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout de conexión a base de datos')), 10000)
+        setTimeout(() => reject(new Error('Timeout de conexión a base de datos')), 100000)
       )
     ]);
   };

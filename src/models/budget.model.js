@@ -47,9 +47,13 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
-    paid: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true
+    expenseId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'expenses',
+        key: 'id'
+      }
     },
     ...auditFields(DataTypes)
   }, {
@@ -65,6 +69,10 @@ module.exports = (sequelize) => {
     Budget.belongsTo(models.Subtype, {
       foreignKey: 'subtypeId',
       as: 'subtype'
+    });
+    Budget.belongsTo(models.Expense, {
+      foreignKey: 'expenseId',
+      as: 'expense'
     });
     Budget.belongsTo(models.User, {
       foreignKey: 'userId',

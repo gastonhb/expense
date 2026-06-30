@@ -14,8 +14,8 @@ router.use(protect);
 /**
  * @swagger
  * tags:
- *   name: IncomeTypes
- *   description: Operaciones CRUD para tipos de gastos
+ *   name: Income Types
+ *   description: Operaciones CRUD para tipos de ingresos
  */
 
 router.route('/')

@@ -5,9 +5,9 @@ const { uuid, orderString, optionalUuid } = require('./custom.validation');
 const find = {
   query: Joi.object().keys({
     ...paginationAndOrder,
-    date: Joi.date().iso(),
-    dateFrom: Joi.date().iso(),
-    dateTo: Joi.date().iso(),
+    date: Joi.string().isoDate(),
+    dateFrom: Joi.string().isoDate(),
+    dateTo: Joi.string().isoDate(),
     paymentMethodId: Joi.any().custom(optionalUuid),
     typeId: Joi.any().custom(optionalUuid),
     subtypeId: Joi.any().custom(optionalUuid),
@@ -17,7 +17,7 @@ const find = {
 };
 
 const baseBodySchema = {
-  date: Joi.date().iso(),
+  date: Joi.string().isoDate(),
   amount: Joi.number().precision(2).min(0),
   paymentMethodId: Joi.any().custom(optionalUuid),
   typeId: Joi.any().custom(optionalUuid),
