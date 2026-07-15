@@ -23,6 +23,9 @@ coverage/
 node_modules/
 .pnpm-store
 
+# Generated Swagger UI assets (created during the Vercel build)
+public/api-docs/
+
 # pnpm store
 .pnpm
 

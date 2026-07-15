@@ -11,6 +11,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "dev:watch": "node --watch src/index.js",
+    "build": "node scripts/copy-swagger-assets.js",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "test": "echo \"Error: no test specified\" && exit 1",

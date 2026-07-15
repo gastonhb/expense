@@ -5,6 +5,7 @@
       "maxDuration": 30
     }
   },
+  "buildCommand": "pnpm run build",
   "rewrites": [
     {
       "source": "/(.*)",
