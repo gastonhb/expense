@@ -2,6 +2,7 @@ const config = require('./config/environment');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
+const swaggerUiDist = require('swagger-ui-dist');
 const routes = require('./routes/index.js');
 const morganMiddleware = require('./config/morgan');
 const logger = require('./config/logger');
@@ -13,6 +14,12 @@ const { HTTP_STATUS } = require('./utils/constants');
 const ApiError = require('./controllers/ApiError.js');
 
 const app = express();
+const swaggerUiAssetsPath = swaggerUiDist.absolutePath();
+const swaggerUiAssets = new Set([
+  'swagger-ui.css',
+  'swagger-ui-bundle.js',
+  'swagger-ui-standalone-preset.js'
+]);
 
 // Trust proxy (para rate limiting y logs correctos)
 app.set('trust proxy', 1);
@@ -32,6 +39,20 @@ app.use(helmet());
 // Body parsers
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+app.get('/api-docs/:asset', (req, res, next) => {
+  const { asset } = req.params;
+
+  if (!swaggerUiAssets.has(asset)) {
+    return next();
+  }
+
+  return res.sendFile(asset, { root: swaggerUiAssetsPath }, (error) => {
+    if (error) {
+      next(error);
+    }
+  });
+});
 
 // Documentación API con Swagger
 if (config.swagger.enabled) {
