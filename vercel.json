@@ -3,7 +3,13 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 30,
-      "includeFiles": "public/api-docs/**"
+      "includeFiles": [
+        "public/api-docs/**",
+        "src/routes/**/*.js",
+        "src/controllers/**/*.js",
+        "src/models/**/*.js",
+        "src/docs/swagger/**/*.js"
+      ]
     }
   },
   "buildCommand": "pnpm run build",

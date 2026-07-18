@@ -1,8 +1,10 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 const config = require('./environment');
 
 const baseUrl = config.env === 'development' ? `${config.url}:${config.port}` : config.url;
+const swaggerFiles = (directory) => path.join(__dirname, directory, '*.js').replace(/\\/g, '/');
 
 const options = {
   definition: {
@@ -221,10 +223,10 @@ const options = {
     ]
   },
   apis: [
-    './src/routes/*.js',
-    './src/controllers/*.js',
-    './src/models/*.js',
-    './src/docs/swagger/*.js'
+    swaggerFiles('../routes'),
+    swaggerFiles('../controllers'),
+    swaggerFiles('../models'),
+    swaggerFiles('../docs/swagger')
   ]
 };
 
