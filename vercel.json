@@ -2,8 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "maxDuration": 30,
-      "includeFiles": "node_modules/swagger-ui-dist/**"
+      "maxDuration": 30
     }
   },
   "buildCommand": "pnpm run build",
