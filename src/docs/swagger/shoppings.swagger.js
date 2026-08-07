@@ -52,6 +52,9 @@
  *               subtypeId:
  *                 type: string
  *                 format: uuid
+ *               budgetId:
+ *                 type: string
+ *                 format: uuid
  *     responses:
  *       201:
  *         description: Compra creada con cuotas

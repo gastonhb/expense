@@ -55,6 +55,14 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
+    budgetId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'budgets',
+        key: 'id'
+      }
+    },
     ...auditFields(DataTypes)
   }, {
     tableName: 'quotas',
@@ -73,6 +81,10 @@ module.exports = (sequelize) => {
     Quota.belongsTo(models.MonthlyBudget, {
       foreignKey: 'monthlyBudgetId',
       as: 'monthlyBudget'
+    });
+    Quota.belongsTo(models.Budget, {
+      foreignKey: 'budgetId',
+      as: 'budget'
     });
     Quota.belongsTo(models.User, {
       foreignKey: 'userId',

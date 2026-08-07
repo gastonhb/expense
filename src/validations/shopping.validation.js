@@ -26,6 +26,8 @@ const create = {
     quotasCount: Joi.number().integer().min(1).required(),
     typeId: Joi.any().custom(optionalUuid),
     subtypeId: Joi.any().custom(optionalUuid),
+    paymentSubtypeId: Joi.any().custom(optionalUuid),
+    budgetId: Joi.any().custom(optionalUuid),
     description: Joi.string().trim().allow('').required()
   })
 };
@@ -47,6 +49,7 @@ const update = {
     quotasCount: Joi.number().integer().min(1),
     typeId: Joi.any().custom(optionalUuid),
     subtypeId: Joi.any().custom(optionalUuid),
+    paymentSubtypeId: Joi.any().custom(optionalUuid),
     description: Joi.string().trim().allow('')
   }).min(1)
 };

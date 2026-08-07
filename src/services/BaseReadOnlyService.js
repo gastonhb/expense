@@ -183,14 +183,19 @@ class BaseReadOnlyService {
       findOptions.limit = limit;
     }
 
-    if (!options.includes && this.findIncludes) {
+    const includeOptions = options.include || options.includes;
+    if (includeOptions) {
+      findOptions.include = includeOptions;
+    } else if (this.findIncludes) {
       findOptions.include = this.findIncludes;
-    } else if (options.includes) {
-      findOptions.include = options.includes;
     }
 
     if (options.attributes) {
       findOptions.attributes = options.attributes;
+    }
+
+    if (options.transaction) {
+      findOptions.transaction = options.transaction;
     }
 
     const { rows, count } = await this.model.findAndCountAll(findOptions);

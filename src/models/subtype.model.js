@@ -24,6 +24,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true
     },
+    acceptsPaymentInQuotas: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     typeId: {
       type: DataTypes.UUID,
       allowNull: false,

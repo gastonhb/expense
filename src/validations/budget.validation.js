@@ -20,6 +20,7 @@ const create = {
     typeId: Joi.any().custom(optionalUuid),
     subtypeId: Joi.any().custom(optionalUuid),
     monthlyBudgetId: Joi.any().custom(optionalUuid).required(),
+    quotaIds: Joi.array().items(Joi.string().custom(optionalUuid)),
     description: Joi.string().trim().allow(''),
     paid: Joi.boolean()
   })
@@ -41,6 +42,7 @@ const update = {
     typeId: Joi.any().custom(optionalUuid),
     subtypeId: Joi.any().custom(optionalUuid),
     monthlyBudgetId: Joi.any().custom(optionalUuid),
+    quotaIds: Joi.array().items(Joi.string().custom(optionalUuid)),
     description: Joi.string().trim().allow(''),
     paid: Joi.boolean()
   }).min(1)

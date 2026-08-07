@@ -43,6 +43,14 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
+    paymentSubtypeId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'subtypes',
+        key: 'id'
+      }
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -52,6 +60,14 @@ module.exports = (sequelize) => {
       allowNull: false,
       references: {
         model: 'users',
+        key: 'id'
+      }
+    },
+    budgetId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'budgets',
         key: 'id'
       }
     },
@@ -70,6 +86,10 @@ module.exports = (sequelize) => {
       foreignKey: 'subtypeId',
       as: 'subtype'
     });
+    Shopping.belongsTo(models.Subtype, {
+      foreignKey: 'paymentSubtypeId',
+      as: 'paymentSubtype'
+    });
     Shopping.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user'
@@ -85,6 +105,10 @@ module.exports = (sequelize) => {
     Shopping.hasMany(models.Quota, {
       foreignKey: 'shoppingId',
       as: 'quotas'
+    });
+    Shopping.belongsTo(models.Budget, {
+      foreignKey: 'budgetId',
+      as: 'budget'
     });
   };
 

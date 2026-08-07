@@ -60,6 +60,35 @@ const findOrCreateFirebaseUser = async (decodedToken) => {
 };
 
 const getAuthenticatedUser = async (token) => {
+  // Dev impersonation: token starts with a configured prefix followed by an email
+  const impersonationPrefix = process.env.IMPERSONATED_USER_TOKEN_PREFIX;
+  const isDev = process.env.NODE_ENV !== 'production';
+
+  if (impersonationPrefix && token.startsWith(impersonationPrefix) && isDev) {
+    const email = token.slice(impersonationPrefix.length).toLowerCase();
+
+    // basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new AppError('Token de impersonación mal formado.', 401);
+    }
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new AppError('Usuario impersonado no encontrado.', 401);
+    }
+
+    logger.info('Acceso por impersonación de desarrollo', { email, userId: user.id });
+
+    return {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+      authenticationId: null,
+      authProvider: 'dev-impersonation'
+    };
+  }
+
   const decodedToken = await firebaseAuth.verifyIdToken(token);
   const user = await findOrCreateFirebaseUser(decodedToken);
 

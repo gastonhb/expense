@@ -17,7 +17,8 @@ const create = {
     name: Joi.string().trim().required(),
     typeId: Joi.string().custom(uuid).required(),
     color: Joi.string().trim(),
-    icon: Joi.string().trim()
+    icon: Joi.string().trim(),
+    acceptsPaymentInQuotas: Joi.boolean()
   })
 };
 
@@ -35,7 +36,8 @@ const update = {
     name: Joi.string().trim(),
     typeId: Joi.string().custom(uuid),
     color: Joi.string().trim(),
-    icon: Joi.string().trim()
+    icon: Joi.string().trim(),
+    acceptsPaymentInQuotas: Joi.boolean()
   }).min(1)
 };
 

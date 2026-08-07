@@ -1,6 +1,7 @@
 const { Shopping } = require('../models');
 const BaseService = require('./BaseService');
 const quotaService = require('./quota.service');
+const subtypeService = require('./subtype.service');
 const sequelize = require('../config/database').getSequelize();
 
 class ShoppingService extends BaseService {
@@ -29,12 +30,23 @@ class ShoppingService extends BaseService {
     return `${year}-${month}-${day}`;
   }
 
+  async validateSubtype(subtypeId, reqUser, { transaction } = {}) {
+    if (!subtypeId) {
+      return;
+    }
+
+    await subtypeService.findById(subtypeId, reqUser, { transaction });
+  }
+
   async create(data, reqUser, { transaction } = {}) {
     if (!transaction) {
       return await sequelize.transaction(async (transaction) => {
         return await this.create(data, reqUser, { transaction });
       });
     }
+
+    await this.validateSubtype(data.subtypeId, reqUser, { transaction });
+    await this.validateSubtype(data.paymentSubtypeId, reqUser, { transaction });
 
     const shoppingBody = {
       date: data.date,
@@ -44,6 +56,23 @@ class ShoppingService extends BaseService {
       quotasCount: data.quotasCount,
       userId: reqUser.id
     };
+
+    if (data.typeId) {
+      shoppingBody.typeId = data.typeId;
+    }
+
+    if (data.subtypeId) {
+      shoppingBody.subtypeId = data.subtypeId;
+    }
+
+    if (data.budgetId) {
+      shoppingBody.budgetId = data.budgetId;
+    }
+
+    if (data.paymentSubtypeId) {
+      shoppingBody.paymentSubtypeId = data.paymentSubtypeId;
+    }
+
     const shopping = await super.create(shoppingBody, reqUser, { transaction });
 
     // Create quotas for this shopping

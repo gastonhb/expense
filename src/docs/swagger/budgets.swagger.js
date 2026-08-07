@@ -46,6 +46,11 @@
  *               monthlyBudgetId:
  *                 type: string
  *                 format: uuid
+ *               quotaIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
  *               description:
  *                 type: string
  *               typeId:
@@ -94,6 +99,11 @@
  *                 format: date
  *               amount:
  *                 type: number
+ *               quotaIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
  *               description:
  *                 type: string
  *               paid:

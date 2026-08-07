@@ -74,6 +74,10 @@ module.exports = (sequelize) => {
       foreignKey: 'expenseId',
       as: 'expense'
     });
+    Budget.hasMany(models.Quota, {
+      foreignKey: 'budgetId',
+      as: 'quotas'
+    });
     Budget.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user'
