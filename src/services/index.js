@@ -1,5 +1,7 @@
 module.exports.expenseService = require('./expense.service');
 module.exports.paymentMethodService = require('./paymentMethod.service');
+module.exports.accountService = require('./account.service');
+module.exports.accountStatusService = require('./accountStatus.service');
 module.exports.subtypeService = require('./subtype.service');
 module.exports.typeService = require('./type.service');
 module.exports.userService = require('./user.service');

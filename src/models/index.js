@@ -9,6 +9,8 @@ const Type = require('./type.model')(Database.getSequelize());
 const Subtype = require('./subtype.model')(Database.getSequelize());
 const PaymentMethod = require('./paymentMethod.model')(Database.getSequelize());
 const Expense = require('./expense.model')(Database.getSequelize());
+const Account = require('./account.model')(Database.getSequelize());
+const AccountStatus = require('./accountStatus.model')(Database.getSequelize());
 
 const IncomeType = require('./incomeType.model')(Database.getSequelize());
 const Income = require('./income.model')(Database.getSequelize());
@@ -32,6 +34,8 @@ const models = {
   Subtype,
   PaymentMethod,
   Expense,
+  Account,
+  AccountStatus,
   Income,
   IncomeType,
   Person,

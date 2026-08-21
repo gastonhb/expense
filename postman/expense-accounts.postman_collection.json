@@ -1,0 +1,159 @@
+{
+  "info": {
+    "name": "Expense API - Accounts",
+    "description": "Endpoints para administrar cuentas y registrar sus saldos mensuales.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "accountId",
+      "value": ""
+    },
+    {
+      "key": "accountStatusId",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "List accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts?_limit=20&_order=name",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts"],
+              "query": [
+                {"key": "_limit", "value": "20"},
+                {"key": "_order", "value": "name"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create account",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cuenta sueldo\",\n  \"description\": \"Cuenta bancaria principal\",\n  \"currency\": \"ARS\"\n}"
+            },
+            "url": "{{baseUrl}}/accounts"
+          }
+        },
+        {
+          "name": "Get account",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/accounts/{{accountId}}"
+          }
+        },
+        {
+          "name": "Update account",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cuenta sueldo actualizada\"\n}"
+            },
+            "url": "{{baseUrl}}/accounts/{{accountId}}"
+          }
+        },
+        {
+          "name": "Delete account",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/accounts/{{accountId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account statuses",
+      "item": [
+        {
+          "name": "List account statuses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/account-statuses?accountId={{accountId}}&_order=-date",
+              "host": ["{{baseUrl}}"],
+              "path": ["account-statuses"],
+              "query": [
+                {"key": "accountId", "value": "{{accountId}}"},
+                {"key": "_order", "value": "-date"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create account status",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"date\": \"2026-08-20\",\n  \"amount\": 125000.50\n}"
+            },
+            "url": "{{baseUrl}}/account-statuses"
+          }
+        },
+        {
+          "name": "Get account status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/account-statuses/{{accountStatusId}}"
+          }
+        },
+        {
+          "name": "Update account status",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-08-20\",\n  \"amount\": 130000.75\n}"
+            },
+            "url": "{{baseUrl}}/account-statuses/{{accountStatusId}}"
+          }
+        },
+        {
+          "name": "Delete account status",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/account-statuses/{{accountStatusId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

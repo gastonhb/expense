@@ -1,5 +1,7 @@
 module.exports.expenseValidation = require('./expense.validation');
 module.exports.paymentMethodValidation = require('./paymentMethod.validation');
+module.exports.accountValidation = require('./account.validation');
+module.exports.accountStatusValidation = require('./accountStatus.validation');
 module.exports.subtypeValidation = require('./subtype.validation');
 module.exports.typeValidation = require('./type.validation');
 module.exports.userValidation = require('./user.validation');
