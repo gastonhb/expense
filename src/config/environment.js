@@ -47,6 +47,9 @@ const envSchema = Joi.object({
     .allow('')
     .default('public'),
 
+  DB_TIMEZONE: Joi.string()
+    .default('America/Argentina/Cordoba'),
+
   DB_SSL: Joi.boolean()
     .default(false),
 
@@ -125,6 +128,7 @@ const config = {
     user: env.DB_USER,
     password: env.DB_PASSWORD,
     schema: env.DB_SCHEMA || undefined,
+    timezone: env.DB_TIMEZONE,
     ssl: env.DB_SSL,
     sync: env.DB_SYNC,
     logging: env.DB_LOGGING

@@ -1,6 +1,7 @@
 const { Account, AccountStatus } = require('../models');
 const BaseService = require('./BaseService');
 const { ServiceError } = require('./errors');
+const sequelize = require('../config/database').getSequelize();
 
 class AccountStatusService extends BaseService {
   constructor() {
@@ -16,6 +17,18 @@ class AccountStatusService extends BaseService {
     }];
   }
 
+  async find(filters = {}, options = {}, reqUser = null) {
+    const scopedFilters = reqUser?.id ? { ...filters, userId: reqUser.id } : filters;
+    return await super.find(scopedFilters, options);
+  }
+
+  async findById(id, options = {}, reqUser = null) {
+    if (reqUser?.id) {
+      return await this.findOne({ id, userId: reqUser.id }, options);
+    }
+    return await super.findById(id, options);
+  }
+
   async validateAccount(accountId, reqUser, transaction) {
     const account = await Account.findOne({
       where: { id: accountId, userId: reqUser.id },
@@ -28,6 +41,12 @@ class AccountStatusService extends BaseService {
   }
 
   async create(data, reqUser, options = {}) {
+    if (!options.transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.create(data, reqUser, { ...options, transaction });
+      });
+    }
+
     const { transaction } = options;
     await this.validateAccount(data.accountId, reqUser, transaction);
     data.userId = reqUser.id;

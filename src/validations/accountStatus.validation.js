@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const { paginationAndOrder } = require('./pagination.validation');
-const { uuid, orderString } = require('./custom.validation');
+const { uuid, orderString, date } = require('./custom.validation');
 
 const find = {
   query: Joi.object().keys({
     ...paginationAndOrder,
     accountId: Joi.string().custom(uuid),
-    date: Joi.string().isoDate(),
+    date: Joi.string().custom(date),
     _order: Joi.string().custom(orderString)
   })
 };
@@ -14,7 +14,7 @@ const find = {
 const create = {
   body: Joi.object().keys({
     accountId: Joi.string().custom(uuid).required(),
-    date: Joi.string().isoDate().required(),
+    date: Joi.string().custom(date).required(),
     amount: Joi.number().precision(2).required()
   })
 };
@@ -31,7 +31,7 @@ const update = {
   }),
   body: Joi.object().keys({
     accountId: Joi.string().custom(uuid),
-    date: Joi.string().isoDate(),
+    date: Joi.string().custom(date),
     amount: Joi.number().precision(2)
   }).min(1)
 };

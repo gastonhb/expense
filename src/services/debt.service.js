@@ -1,5 +1,6 @@
 const { Debt } = require('../models');
 const BaseService = require('./BaseService');
+const sequelize = require('../config/database').getSequelize();
 
 class DebtService extends BaseService {
   constructor() {
@@ -15,6 +16,12 @@ class DebtService extends BaseService {
   }
 
   async create(data, reqUser, options = {}) {
+    if (!options.transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.create(data, reqUser, { ...options, transaction });
+      });
+    }
+
     data.ownerUserId = reqUser.id;
     return await super.create(data, reqUser, options);
   }

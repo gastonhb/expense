@@ -20,12 +20,19 @@ class Database {
   }
 
   static getDialectOptions() {
+    const options = {};
+
+    if (config.database.timezone) {
+      options.timezone = config.database.timezone;
+    }
+
     if (!config.database.ssl) {
-      return {};
+      return options;
     }
 
     if (config.database.dialect === 'postgres') {
       return {
+        ...options,
         ssl: {
           require: true,
           rejectUnauthorized: false
@@ -33,7 +40,7 @@ class Database {
       };
     }
 
-    return {};
+    return options;
   }
 
   static sequelize = config.database.url
@@ -41,6 +48,7 @@ class Database {
       dialect: config.database.dialect,
       dialectModule: postgresDialectModule,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
+      timezone: config.database.timezone || 'America/Argentina/Cordoba',
       dialectOptions: Database.getDialectOptions(),
       define: Database.getDefineOptions()
     })
@@ -50,6 +58,7 @@ class Database {
       dialect: config.database.dialect,
       dialectModule: postgresDialectModule,
       logging: config.database.logging ? (msg) => logger.debug(msg) : false,
+      timezone: config.database.timezone || 'America/Argentina/Cordoba',
       dialectOptions: Database.getDialectOptions(),
       define: Database.getDefineOptions()
     });

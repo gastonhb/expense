@@ -2,6 +2,7 @@ const { Subtype, Type } = require('../models');
 const BaseService = require('./BaseService');
 const { ServiceError } = require('./errors');
 const typeService = require('./type.service');
+const sequelize = require('../config/database').getSequelize();
 
 class SubtypeService extends BaseService {
   constructor() {
@@ -28,10 +29,16 @@ class SubtypeService extends BaseService {
     }
   }
 
-  async create(data, reqUser) {
+  async create(data, reqUser, options = {}) {
+    if (!options.transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.create(data, reqUser, { ...options, transaction });
+      });
+    }
+
     await this.validateType(data.typeId, reqUser);
     data.userId = reqUser.id;
-    return await super.create(data, reqUser);
+    return await super.create(data, reqUser, options);
   }
 
   async update(id, data, reqUser) {

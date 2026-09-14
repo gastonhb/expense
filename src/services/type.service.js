@@ -1,5 +1,6 @@
 const { Type } = require('../models');
 const BaseService = require('./BaseService');
+const sequelize = require('../config/database').getSequelize();
 
 class TypeService extends BaseService {
   constructor() {
@@ -9,6 +10,12 @@ class TypeService extends BaseService {
   }
 
   async create(data, reqUser, options = {}) {
+    if (!options.transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.create(data, reqUser, { ...options, transaction });
+      });
+    }
+
     data.userId = reqUser.id;
     return await super.create(data, reqUser, options);
   }

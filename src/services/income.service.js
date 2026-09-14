@@ -2,6 +2,7 @@ const { Income, IncomeType } = require('../models');
 const BaseService = require('./BaseService');
 const { ServiceError } = require('./errors');
 const incomeTypeService = require('./incomeType.service');
+const sequelize = require('../config/database').getSequelize();
 
 class IncomeService extends BaseService {
   constructor() {
@@ -28,6 +29,12 @@ class IncomeService extends BaseService {
   }
 
   async create(data, reqUser, options = {}) {
+    if (!options.transaction) {
+      return await sequelize.transaction(async (transaction) => {
+        return await this.create(data, reqUser, { ...options, transaction });
+      });
+    }
+
     await this.validateIncomeType(data.incomeTypeId, reqUser);
     data.userId = reqUser.id;
     return await super.create(data, reqUser, options);

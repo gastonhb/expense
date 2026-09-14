@@ -29,11 +29,29 @@ const objectId = (value, helpers) => {
 };
 
 const date = (value, helpers) => {
-  const date = new Date(value);
-  if (isNaN(date.getTime())) {
+  if (typeof value !== 'string') {
     return helpers.message('{{#label}} must be a valid date in format YYYY-MM-DD');
   }
-  return date;
+
+  const trimmed = value.trim();
+  const isValid = /^\d{4}-\d{2}-\d{2}$/.test(trimmed);
+
+  if (!isValid) {
+    return helpers.message('{{#label}} must be a valid date in format YYYY-MM-DD');
+  }
+
+  const [year, month, day] = trimmed.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return helpers.message('{{#label}} must be a valid date in format YYYY-MM-DD');
+  }
+
+  return trimmed;
 };
 
 const orderString = (value, helpers) => {
